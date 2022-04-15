@@ -8,7 +8,6 @@
 #define R 0.07
 #define W 0.169
 #define L 0.2
-#define COEF 1/(W+L)
 
 class Subscriber {
     public:
@@ -60,7 +59,7 @@ class Subscriber {
                 vel_msg_rpm.twist.linear.z = 0.0;
                 vel_msg_rpm.twist.angular.x = 0.0;
                 vel_msg_rpm.twist.angular.y = 0.0;
-                vel_msg_rpm.twist.angular.z = (R / 4) * (w_rpm[1] + w_rpm[3] - w_rpm[0] - w_rpm[2]) * COEF;
+                vel_msg_rpm.twist.angular.z = (R / 4) * (w_rpm[1] + w_rpm[3] - w_rpm[0] - w_rpm[2]) / (L+W);
 
                 this->pub.publish(vel_msg_rpm);
 
