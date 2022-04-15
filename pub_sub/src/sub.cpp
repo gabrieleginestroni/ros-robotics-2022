@@ -50,7 +50,7 @@ class Subscriber {
                 vel_msg_ticks.twist.linear.z = 0.0;
                 vel_msg_ticks.twist.angular.x = 0.0;
                 vel_msg_ticks.twist.angular.y = 0.0;
-                vel_msg_ticks.twist.angular.z = (R / 4) * (w_ticks[1] + w_ticks[3] - w_ticks[0] - w_ticks[2]) * COEF;
+                vel_msg_ticks.twist.angular.z = (R / 4) * (w_ticks[1] + w_ticks[3] - w_ticks[0] - w_ticks[2]) / (L+W);
 
                 this->pub.publish(vel_msg_ticks);
 
