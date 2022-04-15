@@ -3,6 +3,7 @@ project(pub_sub)
 
 ## Find catkin and any catkin packages
 find_package(catkin REQUIRED COMPONENTS roscpp geometry_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs)
 
 ## Declare a catkin package
 catkin_package()
