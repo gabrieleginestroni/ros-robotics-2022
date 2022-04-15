@@ -1,4 +1,5 @@
 #include "ros/ros.h"
+#include "sensor_msgs/JointState.h"
 #include "geometry_msgs/TwistStamped.h"
 
 #define N 42
