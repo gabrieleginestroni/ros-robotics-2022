@@ -29,7 +29,7 @@ public:
         std_msgs::Float64 vel_msg_y;
 
         if (this->count>0){
-            elapsed_time = ros::Time::now() - stamp;
+            elapsed_time = msg->header.stamp - stamp;
             time_s = elapsed_time.toSec();
 
             vel_msg_x.data = (msg->pose.position.x - x_last_pose)  / time_s;
@@ -38,7 +38,7 @@ public:
             this->pub_y.publish(vel_msg_y);
         }
         this->count++;
-        this->stamp = ros::Time::now();
+        this->stamp = msg->header.stamp;
         this->x_last_pose = msg->pose.position.x;
         this->y_last_pose = msg->pose.position.y;
     }

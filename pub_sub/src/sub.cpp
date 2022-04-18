@@ -36,7 +36,7 @@ class Subscriber {
                 double w_ticks[4];
                 double w_rpm[4];
 
-                elapsed_time = ros::Time::now() - stamp;
+                elapsed_time = msg->header.stamp - stamp;
                 time_s = elapsed_time.toSec();
 
                 ROS_INFO("elapsed time: %f\n", time_s);
@@ -71,7 +71,7 @@ class Subscriber {
             for (int i = 0; i < 4; i++)
                 this->wheels_ticks_old[i] = msg->position[i];
             this->count++;
-            this->stamp = ros::Time::now();
+            this->stamp = msg->header.stamp;
 
         }
 
