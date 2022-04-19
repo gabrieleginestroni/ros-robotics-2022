@@ -1,0 +1,10 @@
+<launch>
+
+    <param name="initial_pose_x" value="0.0" />
+    <param name="initial_pose_y" value="0.0" />
+    <param name="initial_pose_theta" value="0.0" />
+
+    <node pkg="project1" type="odom_pub" name="odom_pub" />
+    <node pkg="project1" type="vel_pub" name="vel_pub" />
+
+</launch>
