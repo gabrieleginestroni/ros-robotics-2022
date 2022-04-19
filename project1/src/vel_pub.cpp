@@ -48,7 +48,7 @@ class Vel_pub {
                     w_ticks[i] = (delta_ticks[i] / time_s) * (2 * PI ) / (N * T);
                     w_rpm[i] = msg->velocity[i] / (60 * T);
                 }
-
+                vel_msg_ticks.header = msg->header;
                 vel_msg_ticks.twist.linear.x = (R / 4) * (w_ticks[0] + w_ticks[1] + w_ticks[2] + w_ticks[3]);
                 vel_msg_ticks.twist.linear.y = (R / 4) * (w_ticks[1] - w_ticks[0] + w_ticks[2] - w_ticks[3]);
                 vel_msg_ticks.twist.linear.z = 0.0;
@@ -56,6 +56,7 @@ class Vel_pub {
                 vel_msg_ticks.twist.angular.y = 0.0;
                 vel_msg_ticks.twist.angular.z = (R / 4) * (w_ticks[1] + w_ticks[3] - w_ticks[0] - w_ticks[2]) / (L+W);
 
+                vel_msg_rpm.header = msg->header;
                 vel_msg_rpm.twist.linear.x = (R / 4) * (w_rpm[0] + w_rpm[1] + w_rpm[2] + w_rpm[3]);
                 vel_msg_rpm.twist.linear.y = (R / 4) * (w_rpm[1] - w_rpm[0] + w_rpm[2] - w_rpm[3]);
                 vel_msg_rpm.twist.linear.z = 0.0;
