@@ -23,3 +23,6 @@ target_link_libraries(odom_pub ${catkin_LIBRARIES})
 
 add_executable(vel_pub src/vel_pub.cpp)
 target_link_libraries(vel_pub ${catkin_LIBRARIES})
+
+add_executable(errorComp src/errorComp.cpp)
+target_link_libraries(errorComp ${catkin_LIBRARIES})
