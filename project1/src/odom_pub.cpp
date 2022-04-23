@@ -4,6 +4,7 @@
 
 #include <math.h>
 #include <tf/transform_broadcaster.h>
+#include "project1/reset_odom_to_pose.h"
 
 enum class integrate_type {EULER, RUNGE_KUTTA};
 
@@ -16,6 +17,9 @@ class Odom_pub{
             this->n.getParam("/initial_pose_x", this->x_old);
             this->n.getParam("/initial_pose_j", this->y_old);
             this->n.getParam("/initial_pose_theta", this->theta_old);
+            this->reset_odom_to_pose_service = n.advertiseService("reset_odom_to_pose",
+                                                                            &Odom_pub::reset_odom_to_pose,
+                                                                            this);
         }
 
         void main_loop() {
@@ -73,11 +77,28 @@ class Odom_pub{
 
             this->pub.publish(msg_odometry);
 
+
+            transform.setOrigin( tf::Vector3(x_new, y_new, 0));
+            tf::Quaternion q;
+            q.setRPY(0, 0, theta_new);
+            transform.setRotation(q);
+            transform_broadcaster.sendTransform(tf::StampedTransform(transform, msg->header.stamp, "odom", "base_link"));
+
             this->x_old = x_new;
             this->y_old = y_new;
             this->theta_old = theta_new;
             this->stamp = msg->header.stamp;
 
+        }
+
+        bool reset_odom_to_pose(project1::reset_odom_to_pose::Request  &req,
+                                    project1::reset_odom_to_pose::Response &res) {
+
+            this->x_old = req.new_x;
+            this->y_old = req.new_y;
+            this->theta_old = req.new_theta;
+
+            return true;
         }
 
     private:
@@ -92,6 +113,7 @@ class Odom_pub{
         double theta_old;
         tf::TransformBroadcaster transform_broadcaster;
         tf::Transform transform;
+        ros::ServiceServer reset_odom_to_pose_service;
 };
 
 int main(int argc, char **argv) {

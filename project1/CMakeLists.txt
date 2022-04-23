@@ -10,10 +10,19 @@ find_package(catkin REQUIRED COMPONENTS
         nav_msgs
         dynamic_reconfigure
         tf
+        message_generation
         )
 
+## Services
+add_service_files(
+        FILES
+        reset_odom_to_pose.srv
+)
+
+generate_messages(DEPENDENCIES std_msgs)
+
 ## Declare a catkin package
-catkin_package()
+catkin_package(CATKIN_DEPENDS message_runtime)
 
 ## Build talker and listener
 include_directories(include ${catkin_INCLUDE_DIRS})
