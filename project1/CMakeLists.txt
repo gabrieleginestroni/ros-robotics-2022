@@ -36,10 +36,11 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 ## Executables definitions
 add_executable(odom_pub src/odom_pub.cpp)
 target_link_libraries(odom_pub ${catkin_LIBRARIES})
-add_dependencies(odom_pub ${catkin_EXPORTED_TARGETS})
 
 add_executable(vel_pub src/vel_pub.cpp)
 target_link_libraries(vel_pub ${catkin_LIBRARIES})
 
 add_executable(errorComp src/errorComp.cpp)
 target_link_libraries(errorComp ${catkin_LIBRARIES})
+
+add_dependencies(odom_pub ${catkin_EXPORTED_TARGETS})

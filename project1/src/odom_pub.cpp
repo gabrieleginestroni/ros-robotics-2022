@@ -8,7 +8,7 @@
 #include <dynamic_reconfigure/server.h>
 #include <project1/parametersConfig.h>
 
-enum class integration_type {EULER, RUNGE_KUTTA};
+enum integration_type {EULER, RUNGE_KUTTA};
 
 class Odom_pub{
     public:
@@ -17,7 +17,7 @@ class Odom_pub{
             this->pub = this->n.advertise<nav_msgs::Odometry>("odom",1000);
 
             this->n.getParam("/initial_pose_x", this->x_old);
-            this->n.getParam("/initial_pose_j", this->y_old);
+            this->n.getParam("/initial_pose_y", this->y_old);
             this->n.getParam("/initial_pose_theta", this->theta_old);
 
             this->reset_odom_to_pose_service = n.advertiseService("reset_odom_to_pose",
@@ -25,9 +25,10 @@ class Odom_pub{
                                                                             this);
 
             dynamic_reconfigure::Server<project1::parametersConfig>::CallbackType dynRecCallback;
-            dynRecCallback = boost::bind(&odom_pub::setIntegrationType, this, _1, _2);
+            dynRecCallback = boost::bind(&Odom_pub::setIntegrationType, this, _1, _2);
             this->parameters_server.setCallback(dynRecCallback);
-            this->integrationType = integration_type::EULER;
+            this->integrationType = EULER;
+
         }
 
         void main_loop() {
@@ -47,17 +48,13 @@ class Odom_pub{
             elapsed_time = msg->header.stamp - this->stamp;
             time_s = elapsed_time.toSec();
 
-            if (this->integrationType == integration_type::EULER) {
-                //0 indicates that we're using Euler method
-                msg_odometry.pose.covariance[0] = 0.0;
+            if (this->integrationType == EULER) {
 
                 x_new = this->x_old +
                         (msg->twist.linear.x * cos(theta_old) - msg->twist.linear.y * sin(theta_old)) * time_s;
                 y_new = this->y_old +
                         (msg->twist.linear.x * sin(theta_old) + msg->twist.linear.y * cos(theta_old)) * time_s;
             } else {
-                //1 indicates that we're using Runge_Kutta method
-                msg_odometry.pose.covariance[0] = 1.0;
 
                 x_new = this->x_old +
                         (msg->twist.linear.x * cos(theta_old + msg->twist.angular.z * time_s * 0.5) -
@@ -118,10 +115,10 @@ class Odom_pub{
         void setIntegrationType(project1::parametersConfig &paramServer, uint32_t level) {
             switch (paramServer.integration_method) {
                 case 0:
-                    this->integrationType = integration_type::EULER;
+                    this->integrationType = EULER;
                     break;
                 case 1:
-                    this->integrationType = integration_type::RUNGE_KUTTA;
+                    this->integrationType = RUNGE_KUTTA;
                     break;
             }
         }
