@@ -9,15 +9,16 @@
 #define W 0.169
 #define L 0.2
 
-enum class vel_type {RPM, TICKS};
+enum vel_type {RPM, TICKS};
 
 class Vel_pub {
     public:
         Vel_pub(){
             this->sub = this->n.subscribe("wheel_states", 1000, &Vel_pub::compVelocity, this);
             this->pub = this->n.advertise<geometry_msgs::TwistStamped>("cmd_vel",1000);
+
             this->count = 0;
-            this->type = vel_type::RPM;
+            this->type = RPM;
         }
 
         void main_loop() {
@@ -35,10 +36,7 @@ class Vel_pub {
 
             if (this->count>0){
                 ros::Duration elapsed_time;
-                double time_s;
-                double delta_ticks[4];
-                double w_ticks[4];
-                double w_rpm[4];
+                double time_s, delta_ticks[4], w_ticks[4], w_rpm[4];
 
                 elapsed_time = msg->header.stamp - this->stamp;
                 time_s = elapsed_time.toSec();
@@ -64,7 +62,7 @@ class Vel_pub {
                 vel_msg_rpm.twist.angular.y = 0.0;
                 vel_msg_rpm.twist.angular.z = (R / 4) * (w_rpm[1] + w_rpm[3] - w_rpm[0] - w_rpm[2]) / (L+W);
 
-                if(this->type == vel_type::RPM)
+                if(this->type == RPM)
                     this->pub.publish(vel_msg_rpm);
                 else
                     this->pub.publish(vel_msg_ticks);
@@ -83,7 +81,9 @@ class Vel_pub {
         ros::Subscriber sub;
         ros::Publisher pub;
         ros::Time stamp;
+
         vel_type type;
+
         double wheels_ticks_old[4];
         int count;
 
