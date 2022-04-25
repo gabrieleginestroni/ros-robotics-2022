@@ -13,19 +13,24 @@ find_package(catkin REQUIRED COMPONENTS
         message_generation
         )
 
+add_message_files(
+        FILES
+        RpmStamped.msg
+)
+
 ## Services
 add_service_files(
         FILES
         reset_odom_to_pose.srv
 )
 
+## Message dependencies
+generate_messages(DEPENDENCIES std_msgs)
+
 ## Parameters config file
 generate_dynamic_reconfigure_options(
         cfg/parameters.cfg
 )
-
-## Message dependencies
-generate_messages(DEPENDENCIES std_msgs)
 
 ## Declare a catkin package
 catkin_package(CATKIN_DEPENDS message_runtime)
@@ -40,7 +45,9 @@ target_link_libraries(odom_pub ${catkin_LIBRARIES})
 add_executable(vel_pub src/vel_pub.cpp)
 target_link_libraries(vel_pub ${catkin_LIBRARIES})
 
-add_executable(errorComp src/errorComp.cpp)
-target_link_libraries(errorComp ${catkin_LIBRARIES})
+add_executable(inverter src/inverter.cpp)
+target_link_libraries(inverter ${catkin_LIBRARIES})
+
+add_dependencies(inverter ${catkin_EXPORTED_TARGETS})
 
 add_dependencies(odom_pub ${catkin_EXPORTED_TARGETS})

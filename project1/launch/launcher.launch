@@ -6,5 +6,6 @@
 
     <node pkg="project1" type="odom_pub" name="odom_pub" />
     <node pkg="project1" type="vel_pub" name="vel_pub" />
+    <node pkg="project1" type="inverter" name="inverter" />
 
 </launch>
