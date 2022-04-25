@@ -9,7 +9,8 @@ find_package(catkin REQUIRED COMPONENTS
         geometry_msgs
         nav_msgs
         dynamic_reconfigure
-        tf
+        tf2
+        tf2_ros
         message_generation
         )
 

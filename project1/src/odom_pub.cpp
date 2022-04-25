@@ -4,9 +4,11 @@
 #include "project1/reset_odom_to_pose.h"
 
 #include <math.h>
-#include <tf/transform_broadcaster.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf2/LinearMath/Quaternion.h>
 #include <dynamic_reconfigure/server.h>
 #include <project1/parametersConfig.h>
+#include <geometry_msgs/TransformStamped.h>
 
 enum integration_type {EULER, RUNGE_KUTTA};
 
@@ -74,7 +76,13 @@ class Odom_pub{
             msg_odometry.pose.pose.position.y = y_new;
             msg_odometry.pose.pose.position.z = 0.0;
 
-            msg_odometry.pose.pose.orientation = tf::createQuaternionMsgFromYaw(theta_new);
+            //msg_odometry.pose.pose.orientation = tf::createQuaternionMsgFromYaw(theta_new);
+            tf2::Quaternion q;
+            q.setRPY(0,0,theta_new);
+            msg_odometry.pose.pose.orientation.x = q.x();
+            msg_odometry.pose.pose.orientation.y = q.y();
+            msg_odometry.pose.pose.orientation.z = q.z();
+            msg_odometry.pose.pose.orientation.w = q.w();
 
             msg_odometry.twist.twist = msg->twist;
 
@@ -87,11 +95,19 @@ class Odom_pub{
 
             this->pub.publish(msg_odometry);
 
-            transform.setOrigin( tf::Vector3(x_new, y_new, 0));
-            tf::Quaternion q;
-            q.setRPY(0, 0, theta_new);
-            transform.setRotation(q);
-            transform_broadcaster.sendTransform(tf::StampedTransform(transform, msg->header.stamp, "odom", "base_link"));
+            transformStamped.header = msg_odometry.header;
+            transformStamped.child_frame_id = "base_link";
+
+            transformStamped.transform.translation.x = msg_odometry.pose.pose.position.x;
+            transformStamped.transform.translation.y = msg_odometry.pose.pose.position.y;
+            transformStamped.transform.translation.z = 0.0;
+
+            transformStamped.transform.rotation.x = q.x();
+            transformStamped.transform.rotation.y = q.y();
+            transformStamped.transform.rotation.z = q.z();
+            transformStamped.transform.rotation.w = q.w();
+
+            br.sendTransform(transformStamped);
 
             this->x_old = x_new;
             this->y_old = y_new;
@@ -134,8 +150,10 @@ class Odom_pub{
         double y_old;
         double theta_old;
 
-        tf::TransformBroadcaster transform_broadcaster;
-        tf::Transform transform;
+        //tf::TransformBroadcaster transform_broadcaster;
+        //tf::Transform transform;
+        tf2_ros::TransformBroadcaster br;
+        geometry_msgs::TransformStamped transformStamped;
 
         dynamic_reconfigure::Server<project1::parametersConfig> parameters_server;
 };
