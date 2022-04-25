@@ -14,9 +14,11 @@ find_package(catkin REQUIRED COMPONENTS
         message_generation
         )
 
+## Custom message definition files
 add_message_files(
         FILES
         RpmStamped.msg
+        PoseVelSync.msg
 )
 
 ## Services
@@ -28,7 +30,7 @@ add_service_files(
 ## Message dependencies
 generate_messages(DEPENDENCIES std_msgs)
 
-## Parameters config file
+## Parameters configuration file
 generate_dynamic_reconfigure_options(
         cfg/parameters.cfg
 )
@@ -49,6 +51,10 @@ target_link_libraries(vel_pub ${catkin_LIBRARIES})
 add_executable(inverter src/inverter.cpp)
 target_link_libraries(inverter ${catkin_LIBRARIES})
 
-add_dependencies(inverter ${catkin_EXPORTED_TARGETS})
+add_executable(synchronizer src/synchronizer.cpp)
+target_link_libraries(synchronizer ${catkin_LIBRARIES})
 
+## Dependencies compilation order specification
 add_dependencies(odom_pub ${catkin_EXPORTED_TARGETS})
+add_dependencies(inverter ${catkin_EXPORTED_TARGETS})
+add_dependencies(synchronizer ${catkin_EXPORTED_TARGETS})

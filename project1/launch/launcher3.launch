@@ -1,0 +1,16 @@
+<launch>
+
+    <param name="initial_pose_x" value="0.00546012399718" />
+    <param name="initial_pose_y" value="0.0399703718722" />
+    <param name="initial_pose_theta" value="-0.0215406" />
+
+    <node pkg="project1" type="odom_pub" name="odom_pub" />
+    <node pkg="project1" type="vel_pub" name="vel_pub" />
+    <node pkg="project1" type="inverter" name="inverter" />
+    <node pkg="project1" type="synchronizer" name="synchronizer" />
+
+    <arg name="bag_file_name" value="bag3" />
+
+        <node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="--clock $(find project1)/bags/$(arg bag_file_name).bag"/>
+
+</launch>
