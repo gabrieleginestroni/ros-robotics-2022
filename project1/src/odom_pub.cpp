@@ -40,9 +40,8 @@ class Odom_pub{
         }
 
         void compOdometry(const geometry_msgs::TwistStamped::ConstPtr& msg){
-            double x_new, y_new, theta_new;
+            double x_new, y_new, theta_new, time_s;
             ros::Duration elapsed_time;
-            double time_s;
             nav_msgs::Odometry msg_odometry;
 
             elapsed_time = msg->header.stamp - this->stamp;
@@ -87,7 +86,6 @@ class Odom_pub{
             */
 
             this->pub.publish(msg_odometry);
-
 
             transform.setOrigin( tf::Vector3(x_new, y_new, 0));
             tf::Quaternion q;
