@@ -3,7 +3,7 @@ import numpy as np
 import math
 
 # csv import
-df = pd.read_csv("../csv/calibration1.csv")
+df = pd.read_csv("../csv/calibration3.csv")
 print(df.head())
 
 # given values for parameters
@@ -14,12 +14,12 @@ given_N = 42
 # set this to control the amplitude of the interval centered around the given value for R
 amplitude_R = 0.03
 # set this to control the granularity of the interval centered around the given value for R
-interval_R = 30
+interval_R = 40
 
 # set this to control the amplitude of the interval centered around the given value for L+W
 amplitude_LW = 0.1
 # set this to control the granularity of the interval centered around the given value for L+W
-interval_LW = 100
+interval_LW = 40
 
 # set this to control the amplitude of the interval centered around the given value for N
 amplitude_N = 0
@@ -48,14 +48,14 @@ for R in parameters[0]:
             for i in range(1,len(df),1):
                 # first position has already been set
 
-                time_s = ( timestamp_sec - df.iloc[i]['sec'] ) + ( timestamp_nsec - df.iloc[i]['nsec'] ) / math.pow(10,9)
+                time_s = (df.iloc[i]['sec'] - timestamp_sec) + (df.iloc[i]['nsec'] - timestamp_nsec) / math.pow(10,9)
                 timestamp_sec = df.iloc[i]['sec']
                 timestamp_nsec = df.iloc[i]['nsec']
                 # Runge-Kutta
 
-                v_x = (R / 4) * (df.iloc[i]['fl'] + df.iloc[i]['fr'] + df.iloc[i]['rl'] + df.iloc[i]['rr'])
-                v_y = (R / 4) * (df.iloc[i]['fr'] - df.iloc[i]['fl'] + df.iloc[i]['rl'] - df.iloc[i]['rr'])
-                w = (R / 4) * (df.iloc[i]['fr'] + df.iloc[i]['rr'] - df.iloc[i]['fl'] - df.iloc[i]['rl']) / LW
+                v_x = (R / 4) * (df.iloc[i]['fl'] + df.iloc[i]['fr'] + df.iloc[i]['rl'] + df.iloc[i]['rr']) / (60 * 5)
+                v_y = (R / 4) * (df.iloc[i]['fr'] - df.iloc[i]['fl'] + df.iloc[i]['rr'] - df.iloc[i]['rl']) / (60 * 5)
+                w = (R / 4) * (df.iloc[i]['fr'] + df.iloc[i]['rl'] - df.iloc[i]['fl'] - df.iloc[i]['rr']) / (LW * 60 * 5)
 
                 x = x + (v_x * math.cos(theta + w * time_s * 0.5) -
                          v_y * math.sin(theta + w * time_s * 0.5)) * time_s
@@ -74,9 +74,9 @@ for R in parameters[0]:
                 if cumulativeError < bestError:
                     bestError = cumulativeError
                     bestParameters = [R, LW]
-    if(count % 1000 == 0):
-        print(str(count * 100 / total) + " %")
-        print(bestError)
+            if(count % 10 == 0):
+                print("Progress: "+str(count * 100 / total) + " %")
+                print("Current minimum error: "+bestError+" with parameters: "+str(bestParameters)+"\n")
 
 print(bestParameters)
 print(bestError)
