@@ -12,7 +12,7 @@ given_LW = 0.369
 given_N = 42
 
 # set this to control the amplitude of the interval centered around the given value for R
-amplitude_R = 0.03
+amplitude_R = 0.01
 # set this to control the granularity of the interval centered around the given value for R
 interval_R = 40
 
@@ -23,6 +23,7 @@ interval_LW = 40
 
 # set this to control the amplitude of the interval centered around the given value for N
 amplitude_N = 0
+
 total = (2 * interval_R + 1) * (2 * interval_LW + 1) * (2 * amplitude_N + 1);
 print("\nTesting " + str(total) + " values...\n")
 
@@ -36,47 +37,44 @@ bestParameters = []
 count = 0
 for R in parameters[0]:
     for LW in parameters[1]:
-            # initialization
-            count = count + 1
-            timestamp_sec = df.iloc[0]['sec']
-            timestamp_nsec = df.iloc[0]['nsec']
-            x = df.iloc[0]['x']
-            y = df.iloc[0]['y']
-            theta = -0.0215406
-            cumulativeError = 0
+        count = count + 1
 
-            for i in range(1,len(df),1):
-                # first position has already been set
+        # initialization
+        timestamp_sec = df.iloc[0]['sec']
+        timestamp_nsec = df.iloc[0]['nsec']
+        x = df.iloc[0]['x']
+        y = df.iloc[0]['y']
+        theta = -0.0215406
+        cumulativeError = 0
 
-                time_s = (df.iloc[i]['sec'] - timestamp_sec) + (df.iloc[i]['nsec'] - timestamp_nsec) / math.pow(10,9)
-                timestamp_sec = df.iloc[i]['sec']
-                timestamp_nsec = df.iloc[i]['nsec']
-                # Runge-Kutta
+        # first position has already been set
+        for i in range(1, len(df), 1):
+            time_s = (df.iloc[i]['sec'] - timestamp_sec) + (df.iloc[i]['nsec'] - timestamp_nsec) / math.pow(10, 9)
+            timestamp_sec = df.iloc[i]['sec']
+            timestamp_nsec = df.iloc[i]['nsec']
 
-                v_x = (R / 4) * (df.iloc[i]['fl'] + df.iloc[i]['fr'] + df.iloc[i]['rl'] + df.iloc[i]['rr']) / (60 * 5)
-                v_y = (R / 4) * (df.iloc[i]['fr'] - df.iloc[i]['fl'] + df.iloc[i]['rr'] - df.iloc[i]['rl']) / (60 * 5)
-                w = (R / 4) * (df.iloc[i]['fr'] + df.iloc[i]['rl'] - df.iloc[i]['fl'] - df.iloc[i]['rr']) / (LW * 60 * 5)
+            # Runge-Kutta
+            v_x = (R / 4) * (df.iloc[i]['fl'] + df.iloc[i]['fr'] + df.iloc[i]['rl'] + df.iloc[i]['rr']) / (60 * 5)
+            v_y = (R / 4) * (df.iloc[i]['fr'] - df.iloc[i]['fl'] + df.iloc[i]['rr'] - df.iloc[i]['rl']) / (60 * 5)
+            w = (R / 4) * (df.iloc[i]['fr'] + df.iloc[i]['rl'] - df.iloc[i]['fl'] - df.iloc[i]['rr']) / (LW * 60 * 5)
 
-                x = x + (v_x * math.cos(theta + w * time_s * 0.5) -
-                         v_y * math.sin(theta + w * time_s * 0.5)) * time_s
-                y = y + (v_x * math.sin(theta + w * time_s * 0.5) +
-                        v_y * math.cos(theta + w * time_s * 0.5)) * time_s
+            x = x + (v_x * math.cos(theta + w * time_s * 0.5) -
+                     v_y * math.sin(theta + w * time_s * 0.5)) * time_s
+            y = y + (v_x * math.sin(theta + w * time_s * 0.5) +
+                     v_y * math.cos(theta + w * time_s * 0.5)) * time_s
 
-                theta = theta + w * time_s
+            theta = theta + w * time_s
 
-                cumulativeError = cumulativeError + math.sqrt((math.pow(df.iloc[i]['x'] - x, 2) +
-                                                              (math.pow(df.iloc[i]['y'] - y, 2))))
+            cumulativeError = cumulativeError + math.sqrt((math.pow(df.iloc[i]['x'] - x, 2) +
+                                                          (math.pow(df.iloc[i]['y'] - y, 2))))
 
-            if bestError == 0:
-                bestError = cumulativeError
-                bestParameters = [R, LW]
-            else:
-                if cumulativeError < bestError:
-                    bestError = cumulativeError
-                    bestParameters = [R, LW]
-            if(count % 10 == 0):
-                print("Progress: "+str(count * 100 / total) + " %")
-                print("Current minimum error: "+bestError+" with parameters: "+str(bestParameters)+"\n")
+        if bestError == 0 or cumulativeError < bestError:
+            bestError = cumulativeError
+            bestParameters = [R, LW]
 
-print(bestParameters)
-print(bestError)
+        if (count % 10) == 0:
+            print("Progress: "+str(count * 100 / total) + " %")
+            print("Current minimum error: "+str(bestError)+" with parameters: "+str(bestParameters)+"\n")
+
+print("Best error: " + str(bestError))
+print("Best parameters: " + str(bestParameters))
