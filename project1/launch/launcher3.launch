@@ -11,6 +11,6 @@
 
     <arg name="bag_file_name" value="bag3" />
 
-        <node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="--clock $(find project1)/bags/$(arg bag_file_name).bag"/>
+    <node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="--clock $(find project1)/bags/$(arg bag_file_name).bag"/>
 
 </launch>
