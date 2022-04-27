@@ -1,14 +1,19 @@
 import pandas as pd
 import numpy as np
 import math
+from datetime import datetime
 
+# csv import
 df = pd.read_csv("../csv/calibration1.csv")
 print(df.head())
 
+# initialization
+timestamp = int(df.iloc[0]['timestamp'])
 x = df.iloc[0]['x']
 y = df.iloc[0]['y']
 theta = 0
 
+# given values for parameters
 given_R = 0.07
 given_LW = 0.369
 given_N = 42
@@ -31,7 +36,8 @@ print("\nTesting " + str((2 * interval_R + 1) * (2 * interval_LW + 1) * (2 * amp
 parameters = [np.linspace(given_R - amplitude_R, given_R + amplitude_R, num=(2 * interval_R + 1)).tolist(),
               np.linspace(given_LW - amplitude_LW, given_LW + amplitude_LW, num=(2 * interval_LW + 1)).tolist(),
               np.linspace(given_N - amplitude_N, given_N + amplitude_N, num=(2 * amplitude_N + 1)).tolist()]
-
+'''
+# main loop
 bestError = 0
 bestParameters = []
 for R in parameters[0]:
@@ -42,6 +48,8 @@ for R in parameters[0]:
             for i in range(len(df)):
                 # first position has already been set
                 if i != 0:
+                    time_s = datetime.timedelta(df.iloc[i]['timestamp'] - timestamp).seconds
+                    timestamp = df.iloc[i]['timestamp']
                     # Runge-Kutta
                     # TODO: we need the elapsed time from a measurement and another to compute the integral
                     x = x + ((R / 4) * (df.iloc[i]['fl'] + df.iloc[i]['fr'] + df.iloc[i]['rl'] + df.iloc[i]['rr']) *
@@ -78,3 +86,15 @@ for R in parameters[0]:
                     bestParameters.append(N)
 
 print(bestParameters)
+'''
+timestamp = timestamp // 1000
+nsec = timestamp % 1000000
+sec = timestamp // 1000000
+print(nsec, sec)
+
+for i in range(len(df)):
+    timestamp = int(df.iloc[i]['timestamp'])
+    timestamp = timestamp // 1000
+    nsec = timestamp % 1000000
+    sec = timestamp // 1000000
+    print(nsec, sec)
