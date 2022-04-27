@@ -30,7 +30,7 @@ public:
 
     void updateVelocity(const sensor_msgs::JointState::ConstPtr& msg){
         project1::PoseVelSync sync_msg;
-
+        sync_msg.header = msg -> header;
         if(this->poseX != 0.0 || this->poseY != 0.0){
             sync_msg.poseX = this->poseX;
             sync_msg.poseY = this->poseY;
