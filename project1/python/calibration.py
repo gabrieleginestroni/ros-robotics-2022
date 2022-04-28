@@ -4,19 +4,19 @@ import math
 from progress.bar import Bar
 
 # csv import
-df = pd.read_csv("../csv/calibration1.csv")
+df = pd.read_csv("../csv/calibration2.csv")
 print(df.head())
 
 # given values for parameters
-given_R = 0.072 #0.07
-given_LW = 0.385 #0.369
+given_R = 0.069
+given_LW = 0.365
 given_N = 42
 B = 10**9
 
 # set this to control the amplitude of the interval centered around the given value for R
-amplitude_R = 0.001
+amplitude_R = 0.003
 # set this to control the granularity of the interval centered around the given value for R
-interval_R = 10
+interval_R = 30
 
 # set this to control the amplitude of the interval centered around the given value for L+W
 amplitude_LW = 0.02
@@ -27,12 +27,17 @@ interval_LW = 20
 amplitude_N = 0
 
 total = (interval_R ) * (interval_LW ) * (2 * amplitude_N + 1)
-print("\nTesting " + str(total) + " values...\n")
 
-parameters = [np.linspace(given_R - amplitude_R, given_R, num=interval_R).tolist(),
-              np.linspace(given_LW - amplitude_LW, given_LW, num=interval_LW).tolist(),
+# define here search order
+r_start = given_R - amplitude_R
+r_end = given_R
+lw_start = given_LW - amplitude_LW
+lw_end = given_LW
+print("\nTesting " + str(total) + " values...\nR range: ["+str(r_start)+"->"+str(r_end)+"]\nLW range: ["+str(lw_start)+"->"+str(lw_end)+"]\n")
+
+parameters = [np.linspace(given_R, given_R - amplitude_R, num=interval_R).tolist(),
+              np.linspace(given_LW, given_LW - amplitude_LW, num=interval_LW).tolist(),
               np.linspace(given_N - amplitude_N, given_N + amplitude_N, num=(2 * amplitude_N + 1)).tolist()]
-
 
 # progress bar
 class LoadingBar(Bar):
@@ -57,7 +62,7 @@ for R in parameters[0]:
         timestamp_nsec = df.iloc[0]['nsec']
         x = df.iloc[0]['x']
         y = df.iloc[0]['y']
-        theta = -0.02398
+        theta = 0.0677128
         cumulativeError_rss = 0
 
         # first position has already been set
@@ -68,8 +73,8 @@ for R in parameters[0]:
 
             # Runge-Kutta
             v_x = (R / 4) * (df.iloc[i]['fl'] + df.iloc[i]['fr'] + df.iloc[i]['rl'] + df.iloc[i]['rr']) / (60 * 5)
-            v_y = (R / 4) * (df.iloc[i]['fr'] - df.iloc[i]['fl'] + df.iloc[i]['rr'] - df.iloc[i]['rl']) / (60 * 5)
-            w = (R / 4) * (df.iloc[i]['fr'] + df.iloc[i]['rl'] - df.iloc[i]['fl'] - df.iloc[i]['rr']) / (LW * 60 * 5)
+            v_y = (R / 4) * (df.iloc[i]['fr'] - df.iloc[i]['fl'] - df.iloc[i]['rr'] + df.iloc[i]['rl']) / (60 * 5)
+            w = (R / 4) * (df.iloc[i]['fr'] + df.iloc[i]['rr'] - df.iloc[i]['fl'] - df.iloc[i]['rl']) / (LW * 60 * 5)
 
             x = x + (v_x * math.cos(theta + w * time_s * 0.5) -
                      v_y * math.sin(theta + w * time_s * 0.5)) * time_s
