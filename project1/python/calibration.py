@@ -4,7 +4,7 @@ import math
 from progress.bar import Bar
 
 # csv import
-df = pd.read_csv("../csv/calibration3.csv")
+df = pd.read_csv("../csv/calibration1.csv")
 print(df.head())
 
 # given values for parameters
@@ -36,8 +36,10 @@ parameters = [np.linspace(given_R - amplitude_R, given_R + amplitude_R, num=(2 *
 
 # progress bar
 class LoadingBar(Bar):
-    suffix = '%(percent)d%% - %(text)s'
+    suffix = '%(percent)d%% - %(index)d/%(tot)d - %(text)s'
     text = 'Initializing'
+    tot = total
+    count = 0
 
 
 # main loop
@@ -48,13 +50,14 @@ bar = LoadingBar('Processing', max=total, fill='@')
 for R in parameters[0]:
     for LW in parameters[1]:
         count = count + 1
+        bar.index = count
 
         # initialization
         timestamp_sec = df.iloc[0]['sec']
         timestamp_nsec = df.iloc[0]['nsec']
         x = df.iloc[0]['x']
         y = df.iloc[0]['y']
-        theta = -0.0215406
+        theta = -0.02398
         cumulativeError = 0
 
         # first position has already been set
