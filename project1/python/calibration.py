@@ -8,29 +8,29 @@ df = pd.read_csv("../csv/calibration1.csv")
 print(df.head())
 
 # given values for parameters
-given_R = 0.07
-given_LW = 0.369
+given_R = 0.072 #0.07
+given_LW = 0.385 #0.369
 given_N = 42
 B = 10**9
 
 # set this to control the amplitude of the interval centered around the given value for R
-amplitude_R = 0.01
+amplitude_R = 0.001
 # set this to control the granularity of the interval centered around the given value for R
-interval_R = 5
+interval_R = 10
 
 # set this to control the amplitude of the interval centered around the given value for L+W
 amplitude_LW = 0.02
 # set this to control the granularity of the interval centered around the given value for L+W
-interval_LW = 5
+interval_LW = 20
 
 # set this to control the amplitude of the interval centered around the given value for N
 amplitude_N = 0
 
-total = (2 * interval_R + 1) * (2 * interval_LW + 1) * (2 * amplitude_N + 1)
+total = (interval_R ) * (interval_LW ) * (2 * amplitude_N + 1)
 print("\nTesting " + str(total) + " values...\n")
 
-parameters = [np.linspace(given_R - amplitude_R, given_R + amplitude_R, num=(2 * interval_R + 1)).tolist(),
-              np.linspace(given_LW - amplitude_LW, given_LW + amplitude_LW, num=(2 * interval_LW + 1)).tolist(),
+parameters = [np.linspace(given_R - amplitude_R, given_R, num=interval_R).tolist(),
+              np.linspace(given_LW - amplitude_LW, given_LW, num=interval_LW).tolist(),
               np.linspace(given_N - amplitude_N, given_N + amplitude_N, num=(2 * amplitude_N + 1)).tolist()]
 
 
@@ -43,8 +43,8 @@ class LoadingBar(Bar):
 
 
 # main loop
-bestError = 0
-bestParameters = []
+bestError_rss = 0
+bestParameters_rss = []
 count = 0
 bar = LoadingBar('Processing', max=total, fill='@')
 for R in parameters[0]:
@@ -58,7 +58,7 @@ for R in parameters[0]:
         x = df.iloc[0]['x']
         y = df.iloc[0]['y']
         theta = -0.02398
-        cumulativeError = 0
+        cumulativeError_rss = 0
 
         # first position has already been set
         for i in range(1, len(df), 1):
@@ -78,20 +78,20 @@ for R in parameters[0]:
 
             theta = theta + w * time_s
 
-            # MSE
-            cumulativeError = cumulativeError + ((df.iloc[i]['x'] - x)**2 + (df.iloc[i]['y'] - y)**2) / len(df)
+            # RSS
+            cumulativeError_rss = cumulativeError_rss + ((df.iloc[i]['x'] - x)**2 + (df.iloc[i]['y'] - y)**2)
 
             # early pruning
-            if bestError != 0 and cumulativeError > bestError:
+            if bestError_rss != 0 and cumulativeError_rss > bestError_rss:
                 break
 
-        if bestError == 0 or cumulativeError < bestError:
-            bestError = cumulativeError
-            bestParameters = [R, LW]
-            bar.text = "Current minimum error: " + str(bestError) + " with parameters: " + str(bestParameters)
+        if bestError_rss == 0 or cumulativeError_rss < bestError_rss:
+            bestError_rss = cumulativeError_rss
+            bestParameters_rss = [R, LW]
+            bar.text = "Current minimum rss error: " + str(bestError_rss) + " with parameters: " + str(bestParameters_rss)
 
         bar.next()
 
 bar.finish()
-print("Best error: " + str(bestError))
-print("Best parameters: " + str(bestParameters))
+print("Best error: " + str(bestError_rss))
+print("Best parameters: " + str(bestParameters_rss))
