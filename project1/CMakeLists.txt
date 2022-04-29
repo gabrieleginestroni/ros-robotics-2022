@@ -54,7 +54,11 @@ target_link_libraries(inverter ${catkin_LIBRARIES})
 add_executable(synchronizer src/synchronizer.cpp)
 target_link_libraries(synchronizer ${catkin_LIBRARIES})
 
+add_executable(pose_broadcaster src/pose_broadcaster.cpp)
+target_link_libraries(pose_broadcaster ${catkin_LIBRARIES})
+
 ## Dependencies compilation order specification
 add_dependencies(odom_pub ${catkin_EXPORTED_TARGETS})
+add_dependencies(pose_broadcaster ${catkin_EXPORTED_TARGETS})
 add_dependencies(inverter ${catkin_EXPORTED_TARGETS})
 add_dependencies(synchronizer ${catkin_EXPORTED_TARGETS})

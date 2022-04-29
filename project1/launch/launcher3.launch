@@ -8,6 +8,7 @@
     <node pkg="project1" type="vel_pub" name="vel_pub" />
     <node pkg="project1" type="inverter" name="inverter" />
     <node pkg="project1" type="synchronizer" name="synchronizer" />
+    <node pkg="project1" type="pose_broadcaster" name="pose_broadcaster" />
 
     <arg name="bag_file_name" value="bag3" />
 
