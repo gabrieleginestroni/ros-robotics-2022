@@ -8,20 +8,20 @@ df = pd.read_csv("../csv/calibration2.csv")
 print(df.head())
 
 # given values for parameters
-given_R = 0.069
-given_LW = 0.365
+given_R = 0.067
+given_LW = 0.345
 given_N = 42
 B = 10**9
 
 # set this to control the amplitude of the interval centered around the given value for R
-amplitude_R = 0.003
+amplitude_R = 0.005
 # set this to control the granularity of the interval centered around the given value for R
-interval_R = 30
+interval_R = 60
 
 # set this to control the amplitude of the interval centered around the given value for L+W
-amplitude_LW = 0.02
+amplitude_LW = 0.05
 # set this to control the granularity of the interval centered around the given value for L+W
-interval_LW = 20
+interval_LW = 60
 
 # set this to control the amplitude of the interval centered around the given value for N
 amplitude_N = 0
@@ -29,14 +29,14 @@ amplitude_N = 0
 total = (interval_R ) * (interval_LW ) * (2 * amplitude_N + 1)
 
 # define here search order
-r_start = given_R - amplitude_R
-r_end = given_R
-lw_start = given_LW - amplitude_LW
-lw_end = given_LW
+r_start = given_R
+r_end = given_R + amplitude_R
+lw_start = given_LW
+lw_end = given_LW + amplitude_LW
 print("\nTesting " + str(total) + " values...\nR range: ["+str(r_start)+"->"+str(r_end)+"]\nLW range: ["+str(lw_start)+"->"+str(lw_end)+"]\n")
 
-parameters = [np.linspace(given_R, given_R - amplitude_R, num=interval_R).tolist(),
-              np.linspace(given_LW, given_LW - amplitude_LW, num=interval_LW).tolist(),
+parameters = [np.linspace(r_start, r_end, num=interval_R).tolist(),
+              np.linspace(lw_start, lw_end, num=interval_LW).tolist(),
               np.linspace(given_N - amplitude_N, given_N + amplitude_N, num=(2 * amplitude_N + 1)).tolist()]
 
 # progress bar
