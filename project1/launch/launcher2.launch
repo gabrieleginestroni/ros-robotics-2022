@@ -3,6 +3,9 @@
     <param name="initial_pose_x" value="0.0242218170315" />
     <param name="initial_pose_y" value="0.00374252465554" />
     <param name="initial_pose_theta" value="0.0677128" />
+    <param name="N" value="40" />
+    <param name="R" value="0.07" />
+    <param name="LW" value="0.369" />
 
     <node pkg="project1" type="odom_pub" name="odom_pub" />
     <node pkg="project1" type="vel_pub" name="vel_pub" />
@@ -12,6 +15,6 @@
 
     <arg name="bag_file_name" value="bag2" />
 
-        <node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="--clock $(find project1)/bags/$(arg bag_file_name).bag"/>
+    <node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="--clock $(find project1)/bags/$(arg bag_file_name).bag"/>
 
 </launch>

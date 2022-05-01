@@ -3,12 +3,8 @@
 #include "geometry_msgs/TwistStamped.h"
 #include "project1/RpmStamped.h"
 
-#define N 40
 #define T 5
 #define PI 3.14159265358979323846
-#define R 0.07
-#define W 0.169
-#define L 0.2
 
 enum vel_type {RPM, TICKS};
 
@@ -22,6 +18,11 @@ class Vel_pub {
 
             this->count = 0;
             this->type = RPM;
+
+            this->n.getParam("/N", this->N);
+            this->n.getParam("/R", this->R);
+            this->n.getParam("/LW", this->LW);
+
         }
 
         void main_loop() {
@@ -46,7 +47,7 @@ class Vel_pub {
 
                 for (int i = 0; i < 4; i++) {
                     delta_ticks[i] = msg->position[i] - this->wheels_ticks_old[i];
-                    w_ticks[i] = (delta_ticks[i] / time_s) * (2 * PI ) / (N * T);
+                    w_ticks[i] = (delta_ticks[i] / time_s) * (2 * PI ) / (this->N * T);
                     w_rpm[i] = msg->velocity[i] / (60 * T);
                 }
 
@@ -67,19 +68,18 @@ class Vel_pub {
 
                 vel_msg.header = msg->header;
                 if(this->type == RPM){
-                    vel_msg.twist.linear.x = (R / 4) * (w_rpm[0] + w_rpm[1] + w_rpm[2] + w_rpm[3]);
-                    vel_msg.twist.linear.y = (R / 4) * (w_rpm[1] - w_rpm[0] + w_rpm[2] - w_rpm[3]);
-                    vel_msg.twist.angular.z = (R / 4) * (w_rpm[1] + w_rpm[3] - w_rpm[0] - w_rpm[2]) / (L+W);
+                    vel_msg.twist.linear.x = (this->R / 4) * (w_rpm[0] + w_rpm[1] + w_rpm[2] + w_rpm[3]);
+                    vel_msg.twist.linear.y = (this->R / 4) * (w_rpm[1] - w_rpm[0] + w_rpm[2] - w_rpm[3]);
+                    vel_msg.twist.angular.z = (this->R / 4) * (w_rpm[1] + w_rpm[3] - w_rpm[0] - w_rpm[2]) / (this->LW);
                 } else {
-                    vel_msg.twist.linear.x = (R / 4) * (w_ticks[0] + w_ticks[1] + w_ticks[2] + w_ticks[3]);
-                    vel_msg.twist.linear.y = (R / 4) * (w_ticks[1] - w_ticks[0] + w_ticks[2] - w_ticks[3]);
-                    vel_msg.twist.angular.z = (R / 4) * (w_ticks[1] + w_ticks[3] - w_ticks[0] - w_ticks[2]) / (L+W);
+                    vel_msg.twist.linear.x = (this->R / 4) * (w_ticks[0] + w_ticks[1] + w_ticks[2] + w_ticks[3]);
+                    vel_msg.twist.linear.y = (this->R / 4) * (w_ticks[1] - w_ticks[0] + w_ticks[2] - w_ticks[3]);
+                    vel_msg.twist.angular.z = (this->R / 4) * (w_ticks[1] + w_ticks[3] - w_ticks[0] - w_ticks[2]) / (this->LW);
                 }
                 vel_msg.twist.linear.z = 0.0;
                 vel_msg.twist.angular.x = 0.0;
                 vel_msg.twist.angular.y = 0.0;
                 this->pub.publish(vel_msg);
-
             }
 
             for (int i = 0; i < 4; i++)
@@ -100,8 +100,8 @@ class Vel_pub {
 
         vel_type type;
 
-        double wheels_ticks_old[4];
-        int count;
+        double wheels_ticks_old[4], R, LW;
+        int count, N;
 
 };
 
