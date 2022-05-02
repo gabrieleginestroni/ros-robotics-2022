@@ -17,7 +17,7 @@ class Vel_pub {
             this->rpm_pub = this->n.advertise<project1::RpmStamped>("w_rpm",1000);
 
             this->count = 0;
-            this->type = RPM;
+            this->type = TICKS;
 
             this->n.getParam("/N", this->N);
             this->n.getParam("/R", this->R);
