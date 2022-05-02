@@ -33,7 +33,7 @@ To start the project type the following code:
 
 - ##### compile project in a new shell
   ```shell
-   > cd your_catkin_workspace
+   > cd path/to/your/catkin_workspace
    > catkin_make
   ```
 
@@ -43,18 +43,33 @@ To start the project type the following code:
   ```
   
 ## Project description
-- ### Formulas
-  #### Direct kinematics
+- ### Direct formulas
+  #### Linear velocity (from RPM)
   v<sub>x</sub> =  <sup>r</sup> / <sub>4</sub> * (&omega;<sub>fl</sub>+&omega;<sub>fr</sub>+&omega;<sub>rl</sub>+&omega;<sub>rr</sub>)
 
-- ### Topics
-Topic   | Message type | Publisher | Subscribers | Description
---------|------------|------|---------|---------
-/cmd_vel | geometry_msgs/TwistStamped | /vel_pub | /odom_pub, /inverter | base_link linear and angular velocities
-/odom | nav_msgs/Odometry | /odom_pub | | global position computed by integrating base_link velocities
-/robot/pose | geometry_msgs/PoseStamped | | /pose_broadcaster | ground truth pose measured with Optitrack system
-/w_rpm | project1/RpmStamped | /vel_pub | | wheels angular speed computed from RPM [rad/s]
-/w_ticks | project1/RpmStamped | /vel_pub | | wheels angular speed computed from TICKS [rad/s]
-/wheel_states | sensor_msgs/JointState | | /vel_pub | motor angular speed [rad/min] and current motor encoder position fo each wheel's motor
-/wheels_rpm | project1/RpmStamped | /vel_pub | | wheels angular speed computed by inverse kinematics
+  v<sub>y</sub> =
+  #### Angular velocity (from RPM)
+  #### Linear velocity (from TICKS)
+  v<sub>x</sub> =  <sup>r</sup> / <sub>4</sub> * (&omega;<sub>fl</sub>+&omega;<sub>fr</sub>+&omega;<sub>rl</sub>+&omega;<sub>rr</sub>)
 
+  v<sub>y</sub> =
+  #### Angular velocity (from TICKS)
+- ### Inverse formulas
+- ### Topics
+Topic   | Message type | Publisher | Subscribers                          | Description
+--------|------------|------|--------------------------------------|---------
+/cmd_vel | geometry_msgs/TwistStamped | /vel_pub | /odom_pub, /inverter, /synchronizer* | base_link linear and angular velocities
+/odom | nav_msgs/Odometry | /odom_pub |                                      | global position computed by integrating base_link velocities
+/robot/pose | geometry_msgs/PoseStamped | | /pose_broadcaster                    | ground truth (GT) pose measured with Optitrack system
+/w_rpm | project1/RpmStamped | /vel_pub |                                      | wheels angular speed computed from RPM [rad/s]
+/w_ticks | project1/RpmStamped | /vel_pub |                                      | wheels angular speed computed from TICKS [rad/s]
+/wheel_states | sensor_msgs/JointState | | /vel_pub, /synchronizer*                             | angular speed [rad/min] and current encoder position for each wheel's motor
+/wheels_rpm | project1/RpmStamped | /vel_pub |                                      | wheels angular speed computed from robot's linear and angular velocities
+/pose_vel_sync | project1/PoseVelSync | /synchronizer* | |motors' angular speeds [rad/min] and robot pose (GT) synchronized
+
+*Note: the provided launch file does not start the _synchronizer_ node, which has been used only for producing the calibration bag files
+- ### Nodes
+- ### Dynamic reconfigure
+- ### Reset odometry service
+- ### TF
+- ### Parameter Calibration
