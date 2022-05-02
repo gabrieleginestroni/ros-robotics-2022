@@ -43,6 +43,9 @@ To start the project type the following code:
   ```
   
 ## Project description
+- ### Formulas
+  #### Direct kinematics
+  v<sub>x</sub> =  <sup>r</sup> / <sub>4</sub> * (&omega;<sub>fl</sub>+&omega;<sub>fr</sub>+&omega;<sub>rl</sub>+&omega;<sub>rr</sub>)
 
 - ### Topics
 Topic   | Message type | Publisher | Subscribers | Description
