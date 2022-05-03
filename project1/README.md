@@ -107,7 +107,7 @@ These are:
 *Note: the provided launch file does not start the _synchronizer_ node, which has been used only for producing the calibration bag files
   
 - ### Custom messages
-| Name        | <div style="width:150px"> Structure </div>                                                                                                               | Description                                                                                                                                                                |
+| Name        | <div style="width:200px"> Structure </div>                                                                                                               | Description                                                                                                                                                                |
 |-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | PoseVelSync | uint32 sec <br/> uint32 nsec <br/> float64 poseX <br/> float64 poseY <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rl <br/> float64 rpm_rr | used for calibration purposes, this message contains the ground truth pose and some information about the velocities used to control the robot to get to the current  pose |
 | RpmStamped  | Header header <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rr <br/> float64 rpm_rl                                                        | as requested from the project specification, this message is used to contain the */inverter* node results                                                                  |
@@ -121,5 +121,11 @@ To try this feature we recommend using the _rqt_reconfigure_ tool, already shipp
 and a separate window will pop up.
 
 ## Odometry reset service
+The project also provides a service that can be used to set the current pose (both position and orientation) at any point and yaw angle. To use it type:
+```shell
+   > rosservice call reset-odometry-to-pose x y theta
+  ```
+where x is the requested position along the x axis, y the one along the y axis and theta the new orientation measured w.r.t the positive direction of the x axis in radians. 
 ## TF
+![TF Tree](img/tf_tree.jpeg)
 ## Parameter Calibration
