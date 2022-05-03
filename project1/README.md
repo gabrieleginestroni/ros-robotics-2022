@@ -49,7 +49,7 @@ r = wheels radius <br/>
 l = wheels position along x axis <br/>
 w = wheels position along y axis <br/>
 
-  #### Wheels angular velocity:
+  #### Wheels angular velocities:
   #### _from RPM)_ 
   &omega;<sub>rpm</sub> = <sup>1</sup>/<sub>(60 * T)</sub> * &omega;<sub>bags</sub>
   #### _from ticks)_ 
@@ -64,7 +64,7 @@ w = wheels position along y axis <br/>
   &omega;<sub>fr</sub> = <sup>(60 * T)</sup> / <sub>r</sub> * (v<sub>x</sub> + v<sub>y</sub> + &omega; * (l + w)) <br/>
   &omega;<sub>rl</sub> = <sup>(60 * T)</sup> / <sub>r</sub> * (v<sub>x</sub> + v<sub>y</sub> - &omega; * (l + w)) <br/>
   &omega;<sub>rr</sub> = <sup>(60 * T)</sup> / <sub>r</sub> * (v<sub>x</sub> - v<sub>y</sub> + &omega; * (l + w))
-- 
+
 - ### Parameters:
 We created some custom parameters inside the parameter server in order to use them to change some important aspects of the project without needing to recompile it.
 These are:
@@ -107,12 +107,12 @@ These are:
 *Note: the provided launch file does not start the _synchronizer_ node, which has been used only for producing the calibration bag files
   
 - ### Custom messages
-| Name        | Structure <div style="width:100px"> </div>                                                                                                               | Description                                                                                                                                                                |
+| Name        | <div style="width:150px"> Structure </div>                                                                                                               | Description                                                                                                                                                                |
 |-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | PoseVelSync | uint32 sec <br/> uint32 nsec <br/> float64 poseX <br/> float64 poseY <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rl <br/> float64 rpm_rr | used for calibration purposes, this message contains the ground truth pose and some information about the velocities used to control the robot to get to the current  pose |
 | RpmStamped  | Header header <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rr <br/> float64 rpm_rl                                                        | as requested from the project specification, this message is used to contain the */inverter* node results                                                                  |
 
-- ### Dynamic reconfigure
+## Dynamic reconfigure
 As requested, our project supports dynamic reconfigure on the integration method used by the _/odom_pub_ node. To fulfill this task we designed an enumeration with 2 values and used this to populate a parameter of the parameter server : depending on the stored value our node will use Euler's integration method (0, the default one) or the Runge-Kutta's one (1). <br/>
 To try this feature we recommend using the _rqt_reconfigure_ tool, already shipped with ros. To do this type: 
  ```shell
@@ -120,6 +120,6 @@ To try this feature we recommend using the _rqt_reconfigure_ tool, already shipp
   ```
 and a separate window will pop up.
 
-- ### Odometry reset service
-- ### TF
-- ### Parameter Calibration
+## Odometry reset service
+## TF
+## Parameter Calibration
