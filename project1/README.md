@@ -121,9 +121,12 @@ To try this feature we recommend using the _rqt_reconfigure_ tool, already shipp
 and a separate window will pop up.
 
 ## Odometry reset service
-The project also provides a service that can be used to set the current pose (both position and orientation) at any point and yaw angle. To use it type:
+The project also provides a service that can be used to set the current pose (both position and orientation) at any point and yaw angle. Here's and 
+example on how to use it:
 ```shell
-   > rosservice call reset-odometry-to-pose x y theta
+   > rosservice call /reset_odom_to_pose "new_x: 0.0
+   > new_y: 0.0
+   > new_theta: 0.0"
   ```
 where x is the requested position along the x axis, y the one along the y axis and theta the new orientation measured w.r.t the positive direction of the x axis in radians. 
 ## TF
