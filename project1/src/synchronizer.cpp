@@ -13,6 +13,11 @@ public:
 
         this->poseX = 0.0;
         this->poseY = 0.0;
+        this->q_x = 0.0;
+        this->q_y = 0.0;
+        this->q_w = 0.0;
+        this->q_z = 0.0;
+
     }
 
     void main_loop() {
@@ -26,6 +31,11 @@ public:
     void updatePose(const geometry_msgs::PoseStamped::ConstPtr& msg){
         this->poseX = msg->pose.position.x;
         this->poseY = msg->pose.position.y;
+        this->q_x = msg->pose.orientation.x;
+        this->q_y = msg->pose.orientation.y;
+        this->q_w = msg->pose.orientation.w;
+        this->q_z = msg->pose.orientation.z;
+
     }
 
     void updateVelocity(const sensor_msgs::JointState::ConstPtr& msg){
@@ -35,10 +45,16 @@ public:
         if(this->poseX != 0.0 || this->poseY != 0.0){
             sync_msg.poseX = this->poseX;
             sync_msg.poseY = this->poseY;
-            sync_msg.rpm_fl = msg->velocity[0];
-            sync_msg.rpm_fr = msg->velocity[1];
-            sync_msg.rpm_rl = msg->velocity[2];
-            sync_msg.rpm_rr = msg->velocity[3];
+
+            sync_msg.q_x = this->q_x;
+            sync_msg.q_y = this->q_y;
+            sync_msg.q_w = this->q_w;
+            sync_msg.q_z = this->q_z;
+
+            sync_msg.ticks_fl = msg->position[0];
+            sync_msg.ticks_fr = msg->position[1];
+            sync_msg.ticks_rl = msg->position[2];
+            sync_msg.ticks_rr = msg->position[3];
 
             this->pub.publish(sync_msg);
 
@@ -50,7 +66,7 @@ private:
     ros::Subscriber pose_sub, encoder_sub;
     ros::Publisher pub;
 
-    double poseX, poseY;
+    double poseX, poseY, q_x, q_y, q_w, q_z;
 };
 
 int main(int argc, char **argv) {

@@ -2,7 +2,11 @@ uint32 sec
 uint32 nsec
 float64 poseX
 float64 poseY
-float64 rpm_fl
-float64 rpm_fr
-float64 rpm_rl
-float64 rpm_rr
+float64 q_x
+float64 q_y
+float64 q_w
+float64 q_z
+float64 ticks_fl
+float64 ticks_fr
+float64 ticks_rl
+float64 ticks_rr
