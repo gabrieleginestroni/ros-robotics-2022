@@ -3,9 +3,9 @@
     <param name="initial_pose_x" value="0.0" />
     <param name="initial_pose_y" value="0.0" />
     <param name="initial_pose_theta" value="0.0" />
-    <param name="N" value="40" />
-    <param name="R" value="0.06844" />
-    <param name="LW" value="0.36279" />
+    <param name="N" value="42" />
+    <param name="R" value="0.06846" />
+    <param name="LW" value="0.363" />
 
     <node pkg="project1" type="odom_pub" name="odom_pub" />
     <node pkg="project1" type="vel_pub" name="vel_pub" />
