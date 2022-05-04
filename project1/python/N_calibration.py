@@ -75,7 +75,7 @@ for N in parameters:
     theta = 0.0677128
     cumulativeError_rss = 0
 
-    # computing wheels speeds W/O CONSIDERING N
+    # computing wheels speeds CONSIDERING N
     fl_vel = np.multiply((1 / N), par_fl_vel)
     fr_vel = np.multiply((1 / N), par_fr_vel)
     rl_vel = np.multiply((1 / N), par_rl_vel)

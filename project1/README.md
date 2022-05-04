@@ -53,7 +53,7 @@ w = wheels position along y axis <br/>
   #### _from RPM)_ 
   &omega;<sub>rpm</sub> = <sup>1</sup>/<sub>(60 * T)</sub> * &omega;<sub>bags</sub>
   #### _from ticks)_ 
-&omega;<sub>ticks</sub> = <sup>2&pi;</sup>/<sub>(60 * T)</sub> * <sup>&Delta;Ticks</sup>/<sub>&Delta;Time</sub>
+&omega;<sub>ticks</sub> = <sup>2&pi;</sup>/<sub>(N * T)</sub> * <sup>&Delta;Ticks</sup>/<sub>&Delta;Time</sub>
   #### Robot linear velocities:
   v<sub>x</sub> =  <sup>r</sup> / <sub>4</sub> * (&omega;<sub>fl</sub> + &omega;<sub>fr</sub> + &omega;<sub>rl</sub> + &omega;<sub>rr</sub>) <br/>
   v<sub>y</sub> = <sup>r</sup> / <sub>4</sub> * (&omega;<sub>fr</sub> - &omega;<sub>fl</sub> + &omega;<sub>rl</sub> - &omega;<sub>rr</sub>)
@@ -107,10 +107,10 @@ These are:
 *Note: the provided launch file does not start the _synchronizer_ node, which has been used only for producing the calibration bag files
   
 - ### Custom messages
-| Name        | <div style="width:200px"> Structure </div>                                                                                                               | Description                                                                                                                                                                |
-|-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| PoseVelSync | uint32 sec <br/> uint32 nsec <br/> float64 poseX <br/> float64 poseY <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rl <br/> float64 rpm_rr | used for calibration purposes, this message contains the ground truth pose and some information about the velocities used to control the robot to get to the current  pose |
-| RpmStamped  | Header header <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rr <br/> float64 rpm_rl                                                        | as requested from the project specification, this message is used to contain the */inverter* node results                                                                  |
+| Name        | <div style="width:200px"> Structure </div>                                                                                                                | Description                                                                                                                 |
+|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| PoseVelSync | uint32 sec <br/> uint32 nsec <br/> float64 poseX <br/> float64 poseY <br/> float64 q_x <br/> float64 q_y<br/> float64 q_w <br/> float64 q_z <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rl <br/> float64 rpm_rr | used for calibration purposes, this message contains the ground truth pose and wheels' data, synchronized at each timestamp |
+| RpmStamped  | Header header <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rr <br/> float64 rpm_rl                                                         | as requested from the project specification, this message is used to contain the */inverter* node results                   |
 
 ## Dynamic reconfigure
 As requested, our project supports dynamic reconfigure on the integration method used by the _/odom_pub_ node. To fulfill this task we designed an enumeration with 2 values and used this to populate a parameter of the parameter server : depending on the stored value our node will use Euler's integration method (0, the default one) or the Runge-Kutta's one (1). <br/>
@@ -132,3 +132,14 @@ where x is the requested position along the x axis, y the one along the y axis a
 ## TF
 ![TF Tree](img/tf_tree.jpeg)
 ## Parameter Calibration
+Since the provided ticks data from bags have much more noise than RPM data, we decided to split the calibration in two phases, to avoid any possible overfitting
+of the ticks's noise.
+
+We started by calibrating R and L+W parameters, computing in _calibration.py_ the odometry by integrating with Runge-Kutta the velocities
+stored in the calibration csv files and picking parameters from reasonable and fully parametric intervals.
+Then, residual sum of squares (RSS) with euclidean distance between optitrack measured position (x,y) and the position obtained by odometry the has been used to evaluate the parameters.
+Two separated calibrations have been performed, one on bag 2 and the other one on bag 3, to account for odometry errors caused by complex moves of the robot.
+Among the two set of possible best parameters we picked the one with smaller RSS by cross-validating with respect to the two bags.
+
+Second and last step of the calibration has been performed in the same way, but fixing R and L+W, estimating N by computing the odometry using ticks' data.
+The 2-steps calibration turned out to be convenient even because R and N are strongly correlated in the speeds formulas, leading to a unique solution which would not be possible in case of 1-step calibration.
