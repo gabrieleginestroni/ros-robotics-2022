@@ -130,13 +130,17 @@ example on how to use it:
 where new_x is the requested position along the x axis, new_y the one along the y axis and new_theta the orientation measured w.r.t the positive direction of the x axis in radians. 
 
 ## TF
-<img src="img/tf_tree.jpeg" width="540" height="338" class="center"/>
+<p align="center">
+  <img src="img/tf_tree.jpeg" width="720" height="450" class="center"/>
+</p>
 
 ## Parameter Calibration
 Since the provided ticks data from bags have much more noise than RPM data, we decided to split the calibration in two phases, to avoid any possible overfitting
 to the ticks's noise.
 
-<img src="img/velocities_noises.png" width="650" height="522" class="center"/>
+<p align="center">
+  <img src="img/velocities_noises.png" width="650" height="522" class="center"/>
+</p>
  _Profile of a linear velocity (Vx) computed from RPM (left) vs the one computed from ticks_
 
 |![Standard performance on bag 2](img/bag2_std.png)|![Standard performance on bag 3](img/bag3_std.png)|
