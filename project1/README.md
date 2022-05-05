@@ -42,7 +42,7 @@ To start the project type the following code:
   
 ## Project description
 - ### Kinematics
-Given: <br/> 
+Being: <br/> 
 N = ticks count per revolution <br/> 
 T = gear ratio <br/>
 r = wheels radius <br/>
@@ -107,10 +107,10 @@ These are:
 *Note: the provided launch file does not start the _synchronizer_ node, which has been used only for producing the calibration bag files
   
 - ### Custom messages
-| Name        | <div style="width:200px"> Structure </div>                                                                                                                | Description                                                                                                                 |
+| Name        | Structure                                                                                                              | Description                                                                                                                 |
 |-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| PoseVelSync | uint32 sec <br/> uint32 nsec <br/> float64 poseX <br/> float64 poseY <br/> float64 q_x <br/> float64 q_y<br/> float64 q_w <br/> float64 q_z <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rl <br/> float64 rpm_rr | used for calibration purposes, this message contains the ground truth pose and wheels' data, synchronized at each timestamp |
-| RpmStamped  | Header header <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rr <br/> float64 rpm_rl                                                         | as requested from the project specification, this message is used to contain the */inverter* node results                   |
+| PoseVelSync | <img width=300/> <br/> uint32 sec <br/> uint32 nsec <br/> float64 poseX <br/> float64 poseY <br/> float64 q_x <br/> float64 q_y<br/> float64 q_w <br/> float64 q_z <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rl <br/> float64 rpm_rr <br/> <img width=300/>  | used for calibration purposes, this message contains the ground truth pose and wheels' data, synchronized at each timestamp |
+| RpmStamped  | <img width=300/> <br/> Header header <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rr <br/> float64 rpm_rl <br/> <img width=300/>                                                       | as requested from the project specification, this message is used to contain the */inverter* node results                   |
 
 ## Dynamic reconfigure
 As requested, our project supports dynamic reconfigure on the integration method used by the _/odom_pub_ node. To fulfill this task we designed an enumeration with 2 values and used this to populate a parameter of the parameter server : depending on the stored value our node will use Euler's integration method (0, the default one) or the Runge-Kutta's one (1). <br/>
@@ -124,22 +124,32 @@ and a separate window will pop up.
 The project also provides a service that can be used to set the current pose (both position and orientation) at any point and yaw angle. Here's and 
 example on how to use it:
 ```shell
-   > rosservice call /reset_odom_to_pose "new_x: 0.0
-   > new_y: 0.0
-   > new_theta: 0.0"
+   > rosservice call /reset_odom_to_pose "new_x: 0.0 new_y: 0.0 new_theta: 0.0"
   ```
-where x is the requested position along the x axis, y the one along the y axis and theta the new orientation measured w.r.t the positive direction of the x axis in radians. 
+where new_x is the requested position along the x axis, new_y the one along the y axis and new_theta the orientation measured w.r.t the positive direction of the x axis in radians. 
 ## TF
 ![TF Tree](img/tf_tree.jpeg)
 ## Parameter Calibration
 Since the provided ticks data from bags have much more noise than RPM data, we decided to split the calibration in two phases, to avoid any possible overfitting
-of the ticks's noise.
+to the ticks's noise.
+
+ ![Velocities noises](img/velocities_noises.png) 
+ _Profile of a linear velocity (Vx) computed from RPM (left) vs the one computed from ticks_
+
+|![Standard performance on bag 2](img/bag2_std.png)|![Standard performance on bag 3](img/bag3_std.png)|
+|--------------|---------------|
+|_Performance on bag 2 with given parameters_| _Performance on bag 3 with given parameters_
 
 We started by calibrating R and L+W parameters, computing in _calibration.py_ the odometry by integrating with Runge-Kutta the velocities
 stored in the calibration csv files and picking parameters from reasonable and fully parametric intervals.
-Then, residual sum of squares (RSS) with euclidean distance between optitrack measured position (x,y) and the position obtained by odometry the has been used to evaluate the parameters.
+Then, residual sum of squares (RSS) with euclidean distance between optitrack measured position (x,y) and the position obtained by odometry has been used to evaluate the parameters.
 Two separated calibrations have been performed, one on bag 2 and the other one on bag 3, to account for odometry errors caused by complex moves of the robot.
 Among the two set of possible best parameters we picked the one with smaller RSS by cross-validating with respect to the two bags.
 
 Second and last step of the calibration has been performed in the same way, but fixing R and L+W, estimating N by computing the odometry using ticks' data.
+
+|![Calibrated performance on bag 2](img/bag2_best.png)|![Calibrated performance on bag 3](img/bag3_best.png)|
+|--------------|---------------|
+|_Performance on bag 2 with estimated parameters_| _Performance on bag 3 with estimated parameters_
+
 The 2-steps calibration turned out to be convenient even because R and N are strongly correlated in the speeds formulas, leading to a unique solution which would not be possible in case of 1-step calibration.
