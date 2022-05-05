@@ -146,7 +146,7 @@ Then, residual sum of squares (RSS) with euclidean distance between optitrack me
 Two separated calibrations have been performed, one on bag 2 and the other one on bag 3, to account for odometry errors caused by complex moves of the robot.
 Among the two set of possible best parameters we picked the one with smaller RSS by cross-validating with respect to the two bags.
 
-Second and last step of the calibration has been performed in the same way, but fixing R and L+W, estimating N by computing the odometry using ticks' data.
+Second and last step of the calibration has been performed in the same way with _N_calibration.py_, but fixing R and L+W and estimating N by computing the odometry using ticks' data.
 
 |![Calibrated performance on bag 2](img/bag2_best.png)|![Calibrated performance on bag 3](img/bag3_best.png)|
 |--------------|---------------|
