@@ -8,7 +8,7 @@ The first project requires to compute the odometry for an omnidirectional robot 
 - ###  [Tommaso Capacci](https://github.com/TommasoCapacci) (10654230)
 
 ## Files
-All of our code has been organized in a single package named _project1_. Inside this package we can find some subdirectories:
+All of our code has been organized in a single package named _project1_. Inside this package we can find the following subdirectories:
 
 | Directory | Description                                                            |
 |-----------|------------------------------------------------------------------------|
@@ -17,7 +17,7 @@ All of our code has been organized in a single package named _project1_. Inside 
 | csv       | support files used as input of python script for parameter calibration |
 | launch    | launch file to start the implemented nodes                             |
 | msg       | custom messages definition files                                       |
-| python    | script used for parameter calibration                                  |
+| python    | scripts used for parameter calibration                                 |
 | src       | source files of ros nodes                                              |
 | srv       | odometry reset service declaration file                                |
 
@@ -99,18 +99,19 @@ These are:
 | /odom          | nav_msgs/Odometry          | /odom_pub      |                                      | global position computed by integrating base_link velocities                |
 | /robot/pose    | geometry_msgs/PoseStamped  |                | /pose_broadcaster                    | ground truth (GT) pose measured with Optitrack system                       |
 | /w_rpm         | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from RPM [rad/s]                              |
-| /w_ticks       | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from TICKS [rad/s]                            |
+| /w_ticks**     | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from TICKS [rad/s]                            |
 | /wheel_states  | sensor_msgs/JointState     |                | /vel_pub, /synchronizer*             | angular speed [rad/min] and current encoder position for each wheel's motor |
 | /wheels_rpm    | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from robot's linear and angular velocities    |
 | /pose_vel_sync | project1/PoseVelSync       | /synchronizer* |                                      | motors' angular speeds [rad/min] and robot pose (GT) synchronized           |
 
-*Note: the provided launch file does not start the _synchronizer_ node, which has been used only for producing the calibration bag files
+*Note: the provided launch file does not start the _synchronizer_ node, which has been used only for producing the calibration bag files <br>
+**Note: /w_ticks topic has been used to check that velocities computed by the /inverter node match the ones provided by the encoders, apart from some noise
   
 - ### Custom messages
-| Name        | Structure                                                                                                              | Description                                                                                                                 |
-|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| PoseVelSync | <img width=300/> <br/> uint32 sec <br/> uint32 nsec <br/> float64 poseX <br/> float64 poseY <br/> float64 q_x <br/> float64 q_y<br/> float64 q_w <br/> float64 q_z <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rl <br/> float64 rpm_rr <br/> <img width=300/>  | used for calibration purposes, this message contains the ground truth pose and wheels' data, synchronized at each timestamp |
-| RpmStamped  | <img width=300/> <br/> Header header <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rr <br/> float64 rpm_rl <br/> <img width=300/>                                                       | as requested from the project specification, this message is used to contain the */inverter* node results                   |
+| Name        | Structure                                                                                                              | Description                                                                                                                        |
+|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| PoseVelSync | <img width=300/> <br/> uint32 sec <br/> uint32 nsec <br/> float64 poseX <br/> float64 poseY <br/> float64 q_x <br/> float64 q_y<br/> float64 q_w <br/> float64 q_z <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rl <br/> float64 rpm_rr <br/> <img width=300/>  | used for calibration purposes, this message contains the ground truth pose and wheels' data, synchronized at each timestamp        |
+| RpmStamped  | <img width=300/> <br/> Header header <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rr <br/> float64 rpm_rl <br/> <img width=300/>                                                       | as requested from the project specification, this message contains wheels' RPM velocities computed by the */inverter* node |
 
 ## Dynamic reconfigure
 As requested, our project supports dynamic reconfigure on the integration method used by the _/odom_pub_ node. To fulfill this task we designed an enumeration with 2 values and used this to populate a parameter of the parameter server : depending on the stored value our node will use Euler's integration method (0, the default one) or the Runge-Kutta's one (1). <br/>
@@ -124,7 +125,7 @@ and a separate window will pop up.
 The project also provides a service that can be used to set the current pose (both position and orientation) at any point and yaw angle. Here's and 
 example on how to use it:
 ```shell
-   > rosservice call /reset_odom_to_pose "new_x: 0.0 new_y: 0.0 new_theta: 0.0"
+   > rosservice call /reset_odom_to_pose new_x new_y new_theta
   ```
 where new_x is the requested position along the x axis, new_y the one along the y axis and new_theta the orientation measured w.r.t the positive direction of the x axis in radians. 
 ## TF
@@ -140,7 +141,7 @@ to the ticks's noise.
 |--------------|---------------|
 |_Performance on bag 2 with given parameters_| _Performance on bag 3 with given parameters_
 
-We started by calibrating R and L+W parameters, computing in _calibration.py_ the odometry by integrating with Runge-Kutta the velocities
+We started by calibrating R and L+W parameters with RPM data, computing in _calibration.py_ the odometry by integrating with Runge-Kutta the velocities
 stored in the calibration csv files and picking parameters from reasonable and fully parametric intervals.
 Then, residual sum of squares (RSS) with euclidean distance between optitrack measured position (x,y) and the position obtained by odometry has been used to evaluate the parameters.
 Two separated calibrations have been performed, one on bag 2 and the other one on bag 3, to account for odometry errors caused by complex moves of the robot.
