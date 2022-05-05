@@ -140,8 +140,8 @@ to the ticks's noise.
 
 <p align="center">
   <img src="img/velocities_noises.png" width="650" height="522" class="center"/>
+ Profile of a linear velocity (Vx) computed from RPM (left) vs the one computed from ticks
 </p>
- _Profile of a linear velocity (Vx) computed from RPM (left) vs the one computed from ticks_
 
 |![Standard performance on bag 2](img/bag2_std.png)|![Standard performance on bag 3](img/bag3_std.png)|
 |--------------|---------------|
