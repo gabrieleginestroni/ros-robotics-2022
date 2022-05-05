@@ -128,8 +128,10 @@ example on how to use it:
    > rosservice call /reset_odom_to_pose new_x new_y new_theta
   ```
 where new_x is the requested position along the x axis, new_y the one along the y axis and new_theta the orientation measured w.r.t the positive direction of the x axis in radians. 
+
 ## TF
-![TF Tree](img/tf_tree.jpeg)
+<img src="img/tf_tree.jpeg" width="200" height="200"/>
+
 ## Parameter Calibration
 Since the provided ticks data from bags have much more noise than RPM data, we decided to split the calibration in two phases, to avoid any possible overfitting
 to the ticks's noise.
