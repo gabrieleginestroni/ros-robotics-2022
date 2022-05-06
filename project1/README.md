@@ -49,15 +49,15 @@ r = wheels radius <br/>
 l = wheels position along x axis <br/>
 w = wheels position along y axis <br/>
 
-  #### Wheels angular velocities:
+#### Wheels angular velocities:
   #### _from RPM)_ 
   &omega;<sub>rpm</sub> = <sup>1</sup>/<sub>(60 * T)</sub> * &omega;<sub>bags</sub>
   #### _from ticks)_ 
-&omega;<sub>ticks</sub> = <sup>2&pi;</sup>/<sub>(N * T)</sub> * <sup>&Delta;Ticks</sup>/<sub>&Delta;Time</sub>
-  #### Robot linear velocities:
+  &omega;<sub>ticks</sub> = <sup>2&pi;</sup>/<sub>(N * T)</sub> * <sup>&Delta;Ticks</sup>/<sub>&Delta;Time</sub>
+#### Robot linear velocities:
   v<sub>x</sub> =  <sup>r</sup> / <sub>4</sub> * (&omega;<sub>fl</sub> + &omega;<sub>fr</sub> + &omega;<sub>rl</sub> + &omega;<sub>rr</sub>) <br/>
   v<sub>y</sub> = <sup>r</sup> / <sub>4</sub> * (&omega;<sub>fr</sub> - &omega;<sub>fl</sub> + &omega;<sub>rl</sub> - &omega;<sub>rr</sub>)
-  #### Robot angular velocity
+#### Robot angular velocity
   &omega; = <sup>r</sup> / <sub>4</sub> * <sup>1</sup> / <sub>(l + w)</sub> * (&omega;<sub>fr</sub> + &omega;<sub>rr</sub> - &omega;<sub>fl</sub> - &omega;<sub>rl</sub>)
 #### Inverse formulas:
   &omega;<sub>fl</sub> = <sup>(60 * T)</sup> / <sub>r</sub> * (v<sub>x</sub> - v<sub>y</sub> - &omega; * (l + w)) <br/>
@@ -98,14 +98,14 @@ These are:
 | /cmd_vel       | geometry_msgs/TwistStamped | /vel_pub       | /odom_pub, /inverter, /synchronizer* | base_link linear and angular velocities                                     |
 | /odom          | nav_msgs/Odometry          | /odom_pub      |                                      | global position computed by integrating base_link velocities                |
 | /robot/pose    | geometry_msgs/PoseStamped  |                | /pose_broadcaster                    | ground truth (GT) pose measured with Optitrack system                       |
-| /w_rpm         | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from RPM [rad/s]                              |
+| /w_rpm**         | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from RPM [rad/s]                              |
 | /w_ticks**     | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from TICKS [rad/s]                            |
-| /wheel_states  | sensor_msgs/JointState     |                | /vel_pub, /synchronizer*             | angular speed [rad/min] and current encoder position for each wheel's motor |
+| /wheel_states  | sensor_msgs/JointState     |                | /vel_pub, /synchronizer*             | angular speed [rad/min] and current encoder position for each wheel's motor, also used to compare the results computed by the inverter node with the real RPM of the motors |
 | /wheels_rpm    | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from robot's linear and angular velocities    |
 | /pose_vel_sync | project1/PoseVelSync       | /synchronizer* |                                      | motors' angular speeds [rad/min] and robot pose (GT) synchronized           |
 
 *Note: the provided launch file does not start the _synchronizer_ node, which has been used only for producing the calibration bag files <br>
-**Note: /w_ticks topic has been used to check that velocities computed by the /inverter node match the ones provided by the encoders, apart from some noise
+**Note: /w_rpm and /w_ticks topics have been used to compare the noise that affects the wheel's RPM measurements and the ones from ticks (see [Parameters Calibration](#parameters-calibration)).
   
 - ### Custom messages
 | Name        | Structure                                                                                                              | Description                                                                                                                        |
@@ -134,7 +134,7 @@ where new_x is the requested position along the x axis, new_y the one along the 
   <img src="img/tf_tree.jpeg" width="720" height="450" class="center"/>
 </p>
 
-## Parameter Calibration
+## Parameters Calibration
 Since the provided ticks data from bags have much more noise than RPM data, we decided to split the calibration in two phases, to avoid any possible overfitting
 to the ticks's noise.
 
