@@ -100,13 +100,14 @@ These are:
 | /robot/pose    | geometry_msgs/PoseStamped  |                | /pose_broadcaster                    | ground truth (GT) pose measured with Optitrack system                       |
 | /w_rpm**         | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from RPM [rad/s]                              |
 | /w_ticks**     | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from TICKS [rad/s]                            |
-| /wheel_states  | sensor_msgs/JointState     |                | /vel_pub, /synchronizer*             | angular speed [rad/min] and current encoder position for each wheel's motor, also used to compare the results computed by the inverter node with the real RPM of the motors |
+| /wheel_states***  | sensor_msgs/JointState     |                | /vel_pub, /synchronizer*             | angular speed [rad/min] and current encoder position for each wheel's motor|
 | /wheels_rpm    | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from robot's linear and angular velocities    |
 | /pose_vel_sync | project1/PoseVelSync       | /synchronizer* |                                      | motors' angular speeds [rad/min] and robot pose (GT) synchronized           |
 
-*Note: the provided launch file does not start the _synchronizer_ node, which has been used only for producing the calibration bag files <br>
-**Note: /w_rpm and /w_ticks topics have been used to compare the noise that affects the wheel's RPM measurements and the ones from ticks (see [Parameters Calibration](#parameters-calibration)).
-  
+*Note: the provided launch file does not start the _synchronizer_ node, which has been used only for producing the calibration bag files <br/>
+**Note: /w_rpm and /w_ticks topics have been used to compare the noise that affects the wheel's RPM measurements and the ones from ticks (see [Parameters Calibration](#parameters-calibration)). <br/>
+***Note: /wheel_states topic has been also used to compare the results computed by the _/inverter_ node with the real RPM of the motors  
+ 
 - ### Custom messages
 | Name        | Structure                                                                                                              | Description                                                                                                                        |
 |-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
