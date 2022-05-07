@@ -131,13 +131,19 @@ example on how to use it:
 where new_x is the requested position along the x axis, new_y the one along the y axis and new_theta the orientation measured w.r.t the positive direction of the x axis in radians. 
 
 ## TF
+The TF tree results:
 <p align="center">
   <img src="img/tf_tree.jpeg" width="720" height="450" class="center"/>
 </p>
 
+which allowed us to visualize our data on rviz like:
+<p align="center">
+  <img src="img/rviz.png" width="720" height="450" class="center"/>
+</p>
+
 ## Parameters Calibration
-Since the provided ticks data from bags have much more noise than RPM data, we decided to split the calibration in two phases, to avoid any possible overfitting
-to the ticks's noise.
+Since the provided ticks data from bags have much more noise than RPM data, we decided to perform the calibration in two different ways, the first using the RPM measurements to avoid any possible overfitting
+to the ticks' noise, the other directly with the ticks measurements, to then compare them.
 
 <p align="center">
   <img src="img/velocities_noises.png" width="650" height="400" class="center"/>
@@ -150,16 +156,22 @@ to the ticks's noise.
 |----------------------------------------------------|----------------------------------------------------|
 | _Performance on bag 2 with given parameters_       | _Performance on bag 3 with given parameters_       |
 
-We started by calibrating R and L+W parameters with RPM data, computing in _calibration.py_ the odometry by integrating with Runge-Kutta the velocities
+The first calibration has been divided into 2 phases: 
+1) We started by calibrating R and L+W parameters with RPM data, computing in _calibration.py_ the odometry by integrating with Runge-Kutta the velocities
 stored in the calibration csv files and picking parameters from reasonable and fully parametric intervals.
 Then, residual sum of squares (RSS) with euclidean distance between optitrack measured position (x,y) and the position obtained by odometry has been used to evaluate the parameters.
 Two separated calibrations have been performed, one on bag 2 and the other one on bag 3, to account for odometry errors caused by complex moves of the robot.
 Among the two set of possible best parameters we picked the one with smaller RSS by cross-validating with respect to the two bags.
-
-Second and last step of the calibration has been performed in the same way with _N_calibration.py_, but fixing R and L+W and estimating N by computing the odometry using ticks' data.
+2) Finally, we computed the optimal value of N using _N_calibration.py_: keeping the values of R and L+W fixed to the ones found at the previous step, we estimated N by computing the odometry using ticks' data.
 
 | ![Calibrated performance on bag 2](img/bag2_best.png) | ![Calibrated performance on bag 3](img/bag3_best.png) |
 |-------------------------------------------------------|-------------------------------------------------------|
-| _Performance on bag 2 with estimated parameters_      | _Performance on bag 3 with estimated parameters_      |
+| _Performance on bag 2 with estimated parameters (N=38, R=0.0677, LW=0.3587)_      | _Performance on bag 3 with estimated parameters (N=38, R=0.0677, LW=0.3587)_      |
 
-The 2-steps calibration turned out to be convenient even because R and N are strongly correlated in the speeds formulas, leading to a unique solution which would not be possible in case of 1-step calibration.
+The second calibration has been performed in a similar way: starting from the optimal value of N we already found we executed a grid search on different values of R and L+W which were tested using again the odometry calculated directly from ticks.
+
+| ![Calibrated performance on bag 2](img/bag2_ticks.png) | ![Calibrated performance on bag 3](img/bag3_ticks.png) |
+|-------------------------------------------------------|-------------------------------------------------------|
+| _Performance on bag 2 with estimated parameters (N=38, R=0.0678045, LW=0.35301507)_      | _Performance on bag 3 with estimated parameters (N=38, R=0.0678045, LW=0.35301507)_      |
+
+Separating the calibration of the N parameter from the calibration of the others turned out to be convenient even because R and N are strongly correlated in the speeds formulas, leading to a unique solution which would not be possible in case of all-in-one calibration.
