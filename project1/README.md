@@ -123,7 +123,7 @@ To try this feature we recommend using the _rqt_reconfigure_ tool, already shipp
 and a separate window will pop up.
 
 ## Odometry reset service
-The project also provides a service that can be used to set the current pose (both position and orientation) at any point and yaw angle. Here's and 
+The project also provides a service that can be used to set the current pose (both position and orientation) at any point and yaw angle. Here's an 
 example on how to use it:
 ```shell
    > rosservice call /reset_odom_to_pose new_x new_y new_theta
@@ -136,14 +136,14 @@ The TF tree results:
   <img src="img/tf_tree.jpeg" width="720" height="450" class="center"/>
 </p>
 
-which allowed us to visualize our data on rviz like:
+which allowed us to visualize our data on rviz as follows:
 <p align="center">
   <img src="img/rviz.png" width="720" height="450" class="center"/>
 </p>
 
 ## Parameters Calibration
 Since the provided ticks data from bags have much more noise than RPM data, we decided to perform the calibration in two different ways, the first using the RPM measurements to avoid any possible overfitting
-to the ticks' noise, the other directly with the ticks measurements, to then compare them.
+to the ticks' noise, the other directly with the ticks measurements.
 
 <p align="center">
   <img src="img/velocities_noises.png" width="650" height="400" class="center"/>
