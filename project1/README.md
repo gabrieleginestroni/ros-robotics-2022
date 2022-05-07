@@ -87,32 +87,32 @@ These are:
 | /inverter | computes wheels angular speeds starting from base_link velocities |
 
 - ### Support nodes
-| Node              | Description                                                                                                                           |
-|-------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| /synchronizer     | synchronizes /robot/pose and /wheel_states messages and merges their most important data in a custom message for calibration purposes |
-| /pose_broadcaster | intercepts /robot/pose messages and changes their frame-id to "odom" and child-frame-id to "GT", allowing for visualization on rviz   |
+| Node              | Description                                                                                                                          |
+|-------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| /synchronizer     | synchronizes /robot/pose and /wheel_states messages and merges their most relevant data in a custom message for calibration purposes |
+| /pose_broadcaster | intercepts /robot/pose messages and changes their frame-id to "odom" and child-frame-id to "GT", allowing for visualization on rviz  |
 
 - ### Topics
-| Topic          | Message type               | Publisher      | Subscribers                          | Description                                                          |
-|----------------|----------------------------|----------------|--------------------------------------|----------------------------------------------------------------------|
-| /cmd_vel       | geometry_msgs/TwistStamped | /vel_pub       | /odom_pub, /inverter, /synchronizer* | base_link linear and angular velocities                              |
-| /odom          | nav_msgs/Odometry          | /odom_pub      |                                      | position computed by integrating base_link velocities                |
-| /robot/pose    | geometry_msgs/PoseStamped  |                | /pose_broadcaster                    | ground truth (GT) pose measured with Optitrack system                |
-| /w_rpm**         | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from RPM [rad/s]                       |
-| /w_ticks**     | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from TICKS [rad/s]                     |
-| /wheel_states***  | sensor_msgs/JointState     |                | /vel_pub, /synchronizer*             | angular speed [rad/min] and current encoder position for each wheel's motor|
-| /wheels_rpm    | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from robot's linear and angular velocities |
-| /pose_vel_sync | project1/PoseVelSync       | /synchronizer* |                                      | motors' angular speeds [rad/min] and robot pose (GT) synchronized    |
+| Topic            | Message type               | Publisher      | Subscribers                          | Description                                                                 |
+|------------------|----------------------------|----------------|--------------------------------------|-----------------------------------------------------------------------------|
+| /cmd_vel         | geometry_msgs/TwistStamped | /vel_pub       | /odom_pub, /inverter, /synchronizer* | base_link linear and angular velocities                                     |
+| /odom            | nav_msgs/Odometry          | /odom_pub      |                                      | position computed by integrating base_link velocities                       |
+| /robot/pose      | geometry_msgs/PoseStamped  |                | /pose_broadcaster                    | ground truth (GT) pose measured with Optitrack system                       |
+| /w_rpm**         | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from RPM [rad/s]                              |
+| /w_ticks**       | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from TICKS [rad/s]                            |
+| /wheel_states*** | sensor_msgs/JointState     |                | /vel_pub, /synchronizer*             | angular speed [rad/min] and current encoder position for each wheel's motor |
+| /wheels_rpm      | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from robot's linear and angular velocities    |
+| /pose_vel_sync   | project1/PoseVelSync       | /synchronizer* |                                      | motors' angular speeds [rad/min] and robot pose (GT) synchronized           |
 
 *Note: the provided launch file does not start the _synchronizer_ node, which has been used only for producing the calibration bag files <br/>
 **Note: /w_rpm and /w_ticks topics have been used to compare the noise that affects the wheel's RPM measurements and the ones from ticks (see [Parameters Calibration](#parameters-calibration)). <br/>
 ***Note: /wheel_states topic has been also used to compare the results computed by the _/inverter_ node with the real RPM of the motors  
  
 - ### Custom messages
-| Name        | Structure                                                                                                              | Description                                                                                                                        |
-|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
-| PoseVelSync | <img width=300/> <br/> uint32 sec <br/> uint32 nsec <br/> float64 poseX <br/> float64 poseY <br/> float64 q_x <br/> float64 q_y<br/> float64 q_w <br/> float64 q_z <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rl <br/> float64 rpm_rr <br/> <img width=300/>  | used for calibration purposes, this message contains the ground truth pose and wheels' data, synchronized at each timestamp        |
-| RpmStamped  | <img width=300/> <br/> Header header <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rr <br/> float64 rpm_rl <br/> <img width=300/>                                                       | as requested from the project specification, this message contains wheels' RPM velocities computed by the */inverter* node |
+| Name        | Structure                                                                                                                                                                                                                                                                     | Description                                                                                                                 |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| PoseVelSync | <img width=300/> <br/> uint32 sec <br/> uint32 nsec <br/> float64 poseX <br/> float64 poseY <br/> float64 q_x <br/> float64 q_y<br/> float64 q_w <br/> float64 q_z <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rl <br/> float64 rpm_rr <br/> <img width=300/> | used for calibration purposes, this message contains the ground truth pose and wheels' data, synchronized at each timestamp |
+| RpmStamped  | <img width=300/> <br/> Header header <br/> float64 rpm_fl <br/> float64 rpm_fr <br/> float64 rpm_rr <br/> float64 rpm_rl <br/> <img width=300/>                                                                                                                               | as requested from the project specification, this message contains wheels' RPM velocities computed by the */inverter* node  |
 
 ## Dynamic reconfigure
 As requested, our project supports dynamic reconfigure on the integration method used by the _/odom_pub_ node. To fulfill this task we designed an enumeration with 2 values and used this to populate a parameter of the parameter server : depending on the stored value our node will use Euler's integration method (0, the default one) or the Runge-Kutta's one (1). <br/>
@@ -146,9 +146,9 @@ to the ticks's noise.
  Profile of a linear velocity (Vx) computed from RPM (left) vs the one computed from ticks
 </p>
 
-|![Standard performance on bag 2](img/bag2_std.png)|![Standard performance on bag 3](img/bag3_std.png)|
-|--------------|---------------|
-|_Performance on bag 2 with given parameters_| _Performance on bag 3 with given parameters_
+| ![Standard performance on bag 2](img/bag2_std.png) | ![Standard performance on bag 3](img/bag3_std.png) |
+|----------------------------------------------------|----------------------------------------------------|
+| _Performance on bag 2 with given parameters_       | _Performance on bag 3 with given parameters_       |
 
 We started by calibrating R and L+W parameters with RPM data, computing in _calibration.py_ the odometry by integrating with Runge-Kutta the velocities
 stored in the calibration csv files and picking parameters from reasonable and fully parametric intervals.
@@ -158,8 +158,8 @@ Among the two set of possible best parameters we picked the one with smaller RSS
 
 Second and last step of the calibration has been performed in the same way with _N_calibration.py_, but fixing R and L+W and estimating N by computing the odometry using ticks' data.
 
-|![Calibrated performance on bag 2](img/bag2_best.png)|![Calibrated performance on bag 3](img/bag3_best.png)|
-|--------------|---------------|
-|_Performance on bag 2 with estimated parameters_| _Performance on bag 3 with estimated parameters_
+| ![Calibrated performance on bag 2](img/bag2_best.png) | ![Calibrated performance on bag 3](img/bag3_best.png) |
+|-------------------------------------------------------|-------------------------------------------------------|
+| _Performance on bag 2 with estimated parameters_      | _Performance on bag 3 with estimated parameters_      |
 
 The 2-steps calibration turned out to be convenient even because R and N are strongly correlated in the speeds formulas, leading to a unique solution which would not be possible in case of 1-step calibration.
