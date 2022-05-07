@@ -140,7 +140,7 @@ Since the provided ticks data from bags have much more noise than RPM data, we d
 to the ticks's noise.
 
 <p align="center">
-  <img src="img/velocities_noises.png" width="650" height="522" class="center"/>
+  <img src="img/velocities_noises.png" width="650" height="400" class="center"/>
 </p>
 <p align="center">
  Profile of a linear velocity (Vx) computed from RPM (left) vs the one computed from ticks
