@@ -82,27 +82,27 @@ These are:
 - ### Requested nodes
 | Node      | Description                                                       |
 |-----------|-------------------------------------------------------------------|
-| /vel_pub  | computes base_link velocities starting from bags' data            |
-| /odom_pub | computes robot odometry starting from base_link                   |
+| /vel_pub  | computes base_link velocities starting from bags data             |
+| /odom_pub | computes robot odometry starting from base_link velocities        |
 | /inverter | computes wheels angular speeds starting from base_link velocities |
 
 - ### Support nodes
-| Node              | Description                                                                                                                          |
-|-------------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| /synchronizer     | synchronizes /robot/pose and /wheel_states messages and condenses their meaningful data in a custom message for calibration purposes |
-| /pose_broadcaster | intercepts /robot/pose messages and changes their frame-id to "odom" and child-frame-id to "GT", allowing for visualization on rviz  |
+| Node              | Description                                                                                                                           |
+|-------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| /synchronizer     | synchronizes /robot/pose and /wheel_states messages and merges their most important data in a custom message for calibration purposes |
+| /pose_broadcaster | intercepts /robot/pose messages and changes their frame-id to "odom" and child-frame-id to "GT", allowing for visualization on rviz   |
 
 - ### Topics
-| Topic          | Message type               | Publisher      | Subscribers                          | Description                                                                 |
-|----------------|----------------------------|----------------|--------------------------------------|-----------------------------------------------------------------------------|
-| /cmd_vel       | geometry_msgs/TwistStamped | /vel_pub       | /odom_pub, /inverter, /synchronizer* | base_link linear and angular velocities                                     |
-| /odom          | nav_msgs/Odometry          | /odom_pub      |                                      | global position computed by integrating base_link velocities                |
-| /robot/pose    | geometry_msgs/PoseStamped  |                | /pose_broadcaster                    | ground truth (GT) pose measured with Optitrack system                       |
-| /w_rpm**         | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from RPM [rad/s]                              |
-| /w_ticks**     | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from TICKS [rad/s]                            |
+| Topic          | Message type               | Publisher      | Subscribers                          | Description                                                          |
+|----------------|----------------------------|----------------|--------------------------------------|----------------------------------------------------------------------|
+| /cmd_vel       | geometry_msgs/TwistStamped | /vel_pub       | /odom_pub, /inverter, /synchronizer* | base_link linear and angular velocities                              |
+| /odom          | nav_msgs/Odometry          | /odom_pub      |                                      | position computed by integrating base_link velocities                |
+| /robot/pose    | geometry_msgs/PoseStamped  |                | /pose_broadcaster                    | ground truth (GT) pose measured with Optitrack system                |
+| /w_rpm**         | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from RPM [rad/s]                       |
+| /w_ticks**     | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from TICKS [rad/s]                     |
 | /wheel_states***  | sensor_msgs/JointState     |                | /vel_pub, /synchronizer*             | angular speed [rad/min] and current encoder position for each wheel's motor|
-| /wheels_rpm    | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from robot's linear and angular velocities    |
-| /pose_vel_sync | project1/PoseVelSync       | /synchronizer* |                                      | motors' angular speeds [rad/min] and robot pose (GT) synchronized           |
+| /wheels_rpm    | project1/RpmStamped        | /vel_pub       |                                      | wheels angular speed computed from robot's linear and angular velocities |
+| /pose_vel_sync | project1/PoseVelSync       | /synchronizer* |                                      | motors' angular speeds [rad/min] and robot pose (GT) synchronized    |
 
 *Note: the provided launch file does not start the _synchronizer_ node, which has been used only for producing the calibration bag files <br/>
 **Note: /w_rpm and /w_ticks topics have been used to compare the noise that affects the wheel's RPM measurements and the ones from ticks (see [Parameters Calibration](#parameters-calibration)). <br/>
