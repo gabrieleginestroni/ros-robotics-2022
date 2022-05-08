@@ -123,7 +123,7 @@ To try this feature we recommend using the _rqt_reconfigure_ tool, already shipp
 and a separate window will pop up.
 
 ## Odometry reset service
-The project also provides a service that can be used to set the current pose (both position and orientation) at any point and yaw angle. Here's an 
+The project also provides a service to set the current pose (both position and orientation) at any point and yaw angle. Here's an 
 example on how to use it:
 ```shell
    > rosservice call /reset_odom_to_pose new_x new_y new_theta
@@ -160,7 +160,7 @@ The first calibration has been divided into 2 phases:
 1) We started by calibrating R and L+W parameters with RPM data, computing in _calibration.py_ the odometry by integrating with Runge-Kutta the velocities
 stored in the calibration csv files and picking parameters from reasonable and fully parametric intervals.
 Then, residual sum of squares (RSS) with euclidean distance between optitrack measured position (x,y) and the position obtained by odometry has been used to evaluate the parameters.
-Two separated calibrations have been performed, one on bag 2 and the other one on bag 3, to account for odometry errors caused by complex moves of the robot.
+Two separated calibrations have been performed, one on bag 2 and the other one on bag 3, to account for odometry errors caused by complex movements of the robot.
 Among the two set of possible best parameters we picked the one with smaller RSS by cross-validating with respect to the two bags.
 2) Finally, we computed the optimal value of N using _N_calibration.py_: keeping the values of R and L+W fixed to the ones found at the previous step, we estimated N by computing the odometry using ticks' data.
 
@@ -175,3 +175,4 @@ The second calibration has been performed in a similar way: starting from the op
 | _Performance on bag 2 with estimated parameters (N=38, R=0.0678045, LW=0.35301507)_      | _Performance on bag 3 with estimated parameters (N=38, R=0.0678045, LW=0.35301507)_      |
 
 Separating the calibration of the N parameter from the calibration of the others turned out to be convenient even because R and N are strongly correlated in the speeds formulas, leading to a unique solution which would not be possible in case of all-in-one calibration.
+Comparing the plots, we decided to pick the parameters computed from ticks data.
