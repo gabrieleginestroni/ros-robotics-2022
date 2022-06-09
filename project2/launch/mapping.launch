@@ -1,5 +1,5 @@
 <launch>
-	<arg name="bag_file_name" value="robotics2_final" />
+	<arg name="bag_file_name" value="robotics1_final" />
   	<param name="/use_sim_time" value="true"/>
 
 	<!--  ************** add static tf broadcasters  ***************  -->
@@ -11,6 +11,9 @@
 
   	<!--  ************** add odom tf  ***************  -->
 	<node pkg="project2" type="odom_tf" respawn="false" name="odom_tf"/>
+
+	<!--  ************** add map processing node  ***************  -->
+   	<node pkg="project2" type="occupancy_grid_processing.py" respawn="false" name="occupancy_grid_processing" output="screen"/>
 
 	<!-- **************  scan_merger **************  -->
   	<include file="$(find project2)/launch/scan_merger.launch"/>
