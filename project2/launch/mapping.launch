@@ -1,0 +1,20 @@
+<launch>
+	<arg name="bag_file_name" value="robotics1_final" />
+  	<param name="/use_sim_time" value="true"/>
+
+
+  	<!--  ************** add odom tf  ***************  -->
+	<node pkg="demo" type="odom_tf" respawn="false" name="odom_tf"/>
+
+
+	<!-- **************  scan_merger **************  -->
+  	<include file="$(find demo)/launch/scan_merger.launch"/>
+  
+	<!-- **************  gmapping config **************  -->  
+  	<include file="$(find demo)/config/gmapping.launch.xml"/>
+
+	<!-- **************  bag **************  --> 
+    	<node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="--clock $(find demo)/bags/$(arg bag_file_name).bag"/>
+
+</launch>
+

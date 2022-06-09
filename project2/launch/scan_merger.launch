@@ -1,0 +1,24 @@
+<launch>
+	
+	<node pkg="ira_laser_tools" name="laserscan_multi_merger" type="laserscan_multi_merger">
+	<param name="destination_frame" value="base_link"/>
+	<param name="cloud_destination_topic" value="/merged_cloud"/>
+	<param name="scan_destination_topic" value="/scan_multi"/>
+	<param name="laserscan_topics" value ="/front/scan /rear/scan" /> 
+	<param name="angle_min" value="-3.14"/>
+	<param name="angle_max" value="3.14"/>
+	<param name="angle_increment" value="0.0058"/>
+	<param name="scan_time" value="0.0333333"/>
+	<param name="range_min" value="0.50"/>
+	<param name="range_max" value="16.0"/>
+	</node>
+	
+	<node pkg="tf" type="static_transform_publisher" name="base_footprint_to_base_link" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 base_footprint base_link 100" />
+
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_front" args="0.35 0.0 0.0 0.0 0.0 0.51504 0.85717 base_link laser_front 100" />
+
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_rear" args="-0.35 0.0 0.0 0.0 0.0 0.51504 0.85717 base_link laser_rear 100" />
+
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_scan" args="0.0 0.0 0.0 0.0 0.0 0.0 base_link scan 100" />
+	
+</launch>
