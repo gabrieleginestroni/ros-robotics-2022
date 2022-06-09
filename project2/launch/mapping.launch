@@ -6,7 +6,6 @@
   	<!--  ************** add odom tf  ***************  -->
 	<node pkg="project2" type="odom_tf" respawn="false" name="odom_tf"/>
 
-
 	<!-- **************  scan_merger **************  -->
   	<include file="$(find project2)/launch/scan_merger.launch"/>
   
