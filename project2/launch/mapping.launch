@@ -8,21 +8,22 @@
 	<param name="R" value="0.0677" />
 	<param name="LW" value="0.3587" />
 
-        <node pkg="project1" type="odom_pub" name="odom_pub" />
-        <node pkg="project1" type="vel_pub" name="vel_pub" />
+	<!--  ************** add custom odom  ***************  -->
+	<node pkg="project1" type="odom_pub" name="odom_pub" />
+	<node pkg="project1" type="vel_pub" name="vel_pub" />
 
 	<!--  ************** add static tf broadcasters  ***************  -->
-	<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_front" args="0.35 0.0 0.0 0.0 0.0 0.5150381 0.8571673 base_link laser_front 100" />
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_front" args="0.35 0.0 0.0 0.0 0.0 0.5150381 0.8571673 base_link laser_front 100"/>
 
-	<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_rear" args="-0.35 0.0 0.0 0.0 0.0 0.866 0.5 base_link laser_rear 100" />
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_rear" args="-0.35 0.0 0.0 0.0 0.0 0.866 0.5 base_link laser_rear 100"/>
 
-	<node pkg="tf" type="static_transform_publisher" name="base_link_to_scan" args="0.0 0.0 0.0 0.0 0.0 0.0 base_link scan 100" />
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_scan" args="0.0 0.0 0.0 0.0 0.0 0.0 base_link scan 100"/>
 
   	<!--  ************** add odom tf  ***************  -->
 	<node pkg="project2" type="odom_tf" respawn="false" name="odom_tf"/>
 
 	<!--  ************** add map processing node  ***************  -->
-   	<node pkg="project2" type="occupancy_grid_processing.py" respawn="false" name="occupancy_grid_processing" output="screen"/>
+   	<node pkg="project2" type="occupancy_grid_processing.py" respawn="false" name="occupancy_grid_processing"/>
 
 	<!-- **************  scan_merger **************  -->
   	<include file="$(find project2)/launch/scan_merger.launch"/>
@@ -31,7 +32,7 @@
   	<include file="$(find project2)/config/gmapping.launch.xml"/>
 
 	<!-- **************  bag **************  --> 
-    	<node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="--clock $(find project2)/bags/$(arg bag_file_name).bag"/>
+	<node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="--clock $(find project2)/bags/$(arg bag_file_name).bag"/>
 
 </launch>
 
