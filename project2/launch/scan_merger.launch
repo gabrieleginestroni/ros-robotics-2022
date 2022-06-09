@@ -12,11 +12,5 @@
 	<param name="range_min" value="0.50"/>
 	<param name="range_max" value="16.0"/>
 	</node>
-
-	<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_front" args="0.35 0.0 0.0 0.0 0.0 0.51504 0.85717 base_link laser_front 100" />
-
-	<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_rear" args="-0.35 0.0 0.0 0.0 0.0 0.51504 0.85717 base_link laser_rear 100" />
-
-	<node pkg="tf" type="static_transform_publisher" name="base_link_to_scan" args="0.0 0.0 0.0 0.0 0.0 0.0 base_link scan 100" />
 	
 </launch>
