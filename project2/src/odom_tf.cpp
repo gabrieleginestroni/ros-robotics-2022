@@ -12,7 +12,7 @@ private:
 	
 public:
   	pub_sub(){
-  		sub = n.subscribe("/odom", 1, &pub_sub::callback, this);
+  		sub = n.subscribe("/odom_custom", 1, &pub_sub::callback, this);
 	}
 
 	void callback(const nav_msgs::Odometry::ConstPtr& msg){

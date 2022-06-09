@@ -1,6 +1,15 @@
 <launch>
-	<arg name="bag_file_name" value="robotics2_final" />
+	<arg name="bag_file_name" value="robotics1_final" />
   	<param name="/use_sim_time" value="true"/>
+	<param name="initial_pose_x" value="0.0" />
+	<param name="initial_pose_y" value="0.0" />
+	<param name="initial_pose_theta" value="0.0" />
+	<param name="N" value="38" />
+	<param name="R" value="0.0677" />
+	<param name="LW" value="0.3587" />
+
+        <node pkg="project1" type="odom_pub" name="odom_pub" />
+        <node pkg="project1" type="vel_pub" name="vel_pub" />
 
 	<!--  ************** add static tf broadcasters  ***************  -->
 	<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_front" args="0.35 0.0 0.0 0.0 0.0 0.5150381 0.8571673 base_link laser_front 100" />
