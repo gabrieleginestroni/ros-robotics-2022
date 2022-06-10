@@ -1,0 +1,40 @@
+<launch>
+ 
+	<!-- Name of the map to use and initial position -->
+	<arg name="map_file"       default="$(find project2)/map/map.yaml"/> 
+	<arg name="initial_pose_x" default="0.0"/>
+	<arg name="initial_pose_y" default="0.0"/>
+	<arg name="initial_pose_a" default="0.0"/>
+
+	<arg name="odom_frame_id"   default="odom"/>
+	<arg name="global_frame_id" default="map"/>
+
+	<param name="/use_sim_time" value="true"/>
+
+	<!--  ****** map *****  -->
+	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)">
+		<param name="frame_id" value="map"/>
+	</node>
+
+	<!--  ************** add custom odom  ***************  -->
+	<node pkg="project2" type="odom_pub" name="odom_pub" />
+	<node pkg="project2" type="vel_pub" name="vel_pub" />
+
+	<!--  ************** add static tf broadcasters  ***************  -->
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_front" args="0.35 0.0 0.0 0.0 0.0 0.5150381 0.8571673 base_link laser_front 100"/>
+
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_rear" args="-0.35 0.0 0.0 0.0 0.0 0.866 0.5 base_link laser_rear 100"/>
+
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_scan" args="0.0 0.0 0.0 0.0 0.0 0.0 base_link scan 100"/>
+
+  	<!--  ************** add odom tf  ***************  -->
+	<node pkg="project2" type="odom_tf" respawn="false" name="odom_tf"/>
+
+	<!--  ****** amcl *****  -->
+	<include file="$(find project2)/config/amcl.launch.xml">
+		<arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
+		<arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
+		<arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
+	</include>
+
+</launch>
