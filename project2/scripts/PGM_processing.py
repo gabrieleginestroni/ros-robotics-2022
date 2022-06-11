@@ -8,6 +8,7 @@ min_y = -10
 max_x = min_x + res * width
 max_y = min_y + res * height
 radius = 50
+color = 0  # must be 0 <= color <= 255
 
 
 def read_pgm(path):
@@ -60,12 +61,12 @@ def write_circle_on_raster(raster, row, col):
         dist = int(math.sqrt(radius ** 2 - abs(i - row) ** 2))
         for j in range(col - dist, col + dist + 1):
             if 0 <= i <= height - 1 and 0 <= j <= width - 1:
-                raster[i][j] = 0
+                raster[i][j] = color
 
 
 header, pgm = read_pgm("C:\\Users\\tomma\\Desktop\\map.pgm")
 row, col = get_indexes(8, 0)
 write_square_on_raster(pgm, row, col)
-row, col = get_indexes(-22, 10)
+row, col = get_indexes(-22, -5)
 write_circle_on_raster(pgm, row, col)
 write_pgm("C:\\Users\\tomma\\Desktop\\new_map.pgm", header, pgm)
