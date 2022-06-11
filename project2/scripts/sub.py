@@ -4,9 +4,10 @@ import rospy
 from geometry_msgs.msg import PoseWithCovarianceStamped
 from project2.srv import DrawPath, DrawPathResponse
 import math
-import os
+import rospkg 
 
-os.chdir("../")
+rospack = rospkg.RosPack()
+
 res = 0.05
 width = 640
 height = 672
@@ -25,7 +26,7 @@ def to_bytes(n, length, endianess='big'):
 
 
 def read_pgm(name):
-    with open(os.getcwd() + "/robotics/src/project2/map/" + name + ".pgm", "rb") as pgmf:
+    with open(rospack.get_path('project2') + "/map/" + name + ".pgm", "rb") as pgmf:
         '''
         for i in range(2):
             print(pgmf.readline())
@@ -51,7 +52,7 @@ last_col = -1
 
 
 def write_pgm(name):
-    with open(os.getcwd() + "/robotics/src/project2/map/" + name + ".pgm", "wb") as pgmf:
+    with open(rospack.get_path('project2') + "/map/" + name + ".pgm", "wb") as pgmf:
         pgmf.write(header)
 
         for y in range(height):
