@@ -1,7 +1,7 @@
 <launch>
- 
+
 	<!-- Name of the map to use and initial position -->
-	<arg name="map_file"       default="$(find project2)/map/map.yaml"/> 
+	<arg name="map_file"       default="$(find project2)/map/map.yaml"/>
 	<arg name="initial_pose_x" default="0.0"/>
 	<arg name="initial_pose_y" default="0.0"/>
 	<arg name="initial_pose_a" default="0.0"/>
@@ -16,11 +16,14 @@
 		<param name="frame_id" value="map"/>
 	</node>
 
-  	<!--  ************** add odom tf  ***************  -->
+	<!--  ************** add path drawer processing node  ***************  -->
+	<node pkg="project2" type="sub.py" respawn="false" name="path_finder" output="screen"/>
+
+	<!--  ************** add odom tf  ***************  -->
 	<node pkg="project2" type="odom_tf" respawn="false" name="odom_tf"/>
 
 	<!-- **************  scan_merger **************  -->
-  	<include file="$(find project2)/launch/scan_merger.launch"/>
+	<include file="$(find project2)/launch/scan_merger.launch"/>
 
 	<!--  ****** amcl *****  -->
 	<include file="$(find project2)/config/amcl.launch.xml">

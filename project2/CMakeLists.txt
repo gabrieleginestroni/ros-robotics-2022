@@ -6,12 +6,19 @@ find_package(catkin REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   tf
+  rospy
+  message_generation
 )
 
-catkin_package(
-
+add_service_files(
+        FILES
+        DrawPath.srv
 )
 
+generate_messages(
+        DEPENDENCIES
+        std_msgs
+)
 
 include_directories(
   include ${catkin_INCLUDE_DIRS}
