@@ -14,7 +14,7 @@ min_x = -22.8
 min_y = -10
 max_x = min_x + res * width
 max_y = min_y + res * height
-radius = 3
+radius = 1
 color = 0  # must be 0 (black) <= color <= 255
 
 
@@ -46,6 +46,8 @@ def read_pgm(name):
 
 
 header, raster = read_pgm("map")
+last_row = -1
+last_col = -1
 
 
 def write_pgm(name):
@@ -75,7 +77,38 @@ def write_circle_on_raster(row, col):
 
 def callback(data):
     row, col = get_indexes(data.pose.pose.position.x, data.pose.pose.position.y)
-    write_circle_on_raster(row, col)
+    global last_row
+    global last_col
+    if last_row == -1 and last_col == -1:
+        write_circle_on_raster(row, col)
+    else:
+	if last_col < col:
+		for c in range(last_col + 1, col + 1):
+			write_circle_on_raster(last_row, c)
+	else:
+		for c in range(col, last_col):
+			write_circle_on_raster(last_row, c)
+	if last_row < row:
+		for r in range(last_row + 1, row + 1):
+			write_circle_on_raster(r, col)	
+	else:
+		for r in range(row, last_row):
+			write_circle_on_raster(r, col)	
+	'''
+        if last_col != col:
+            m = (last_row - row) / (last_col - col)
+            if last_col < col:
+                for c in range(last_col + 1, col + 1):
+                    write_circle_on_raster(last_row + int((c - last_col) * m), c)
+            else:
+                for c in range(col, last_col):
+                    write_circle_on_raster(row + int((c - col) * m), c)
+        else:
+            for r in range(last_row, row + 1):
+                write_circle_on_raster(r, last_col)
+	'''
+    last_row = row
+    last_col = col
 
 
 def save_img(mess):
