@@ -1,3 +1,5 @@
+import math
+
 res = 0.05
 width = 640
 height = 672
@@ -5,7 +7,7 @@ min_x = -22.8
 min_y = -10
 max_x = min_x + res * width
 max_y = min_y + res * height
-hole = 5
+radius = 50
 
 
 def read_pgm(path):
@@ -46,21 +48,24 @@ def get_indexes(x, y):
     return 0, 0
 
 
-def write_on_raster(raster, row, col):
-    row_ind = []
-    for i in range(row - hole, row + hole + 1):
-        if 0 <= i <= height - 1:
-            row_ind.append(i)
-    col_ind = []
-    for i in range(col - hole, col + hole + 1):
-        if 0 <= i <= width - 1:
-            col_ind.append(i)
-    for i in row_ind:
-        for j in col_ind:
-            raster[i][j] = 0
+def write_square_on_raster(raster, row, col):
+    for i in range(row - radius, row + radius + 1):
+        for j in range(col - radius, col + radius + 1):
+            if 0 <= i <= height - 1 and 0 <= j <= width - 1:
+                raster[i][j] = 0
+
+
+def write_circle_on_raster(raster, row, col):
+    for i in range(row - radius, row + radius + 1):
+        dist = int(math.sqrt(radius ** 2 - abs(i - row) ** 2))
+        for j in range(col - dist, col + dist + 1):
+            if 0 <= i <= height - 1 and 0 <= j <= width - 1:
+                raster[i][j] = 0
 
 
 header, pgm = read_pgm("C:\\Users\\tomma\\Desktop\\map.pgm")
-row, col = get_indexes(0, 0)
-write_on_raster(pgm, row, col)
+row, col = get_indexes(8, 0)
+write_square_on_raster(pgm, row, col)
+row, col = get_indexes(-22, 10)
+write_circle_on_raster(pgm, row, col)
 write_pgm("C:\\Users\\tomma\\Desktop\\new_map.pgm", header, pgm)
