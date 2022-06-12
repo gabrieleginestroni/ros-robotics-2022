@@ -15,8 +15,10 @@ min_x = -22.8
 min_y = -10
 max_x = min_x + res * width
 max_y = min_y + res * height
+
 radius = 1
 color = 0  # must be 0 (black) <= color <= 255
+interpolation = 1
 
 
 def to_bytes(n, length, endianess='big'):
@@ -27,12 +29,6 @@ def to_bytes(n, length, endianess='big'):
 
 def read_pgm(name):
     with open(rospack.get_path('project2') + "/map/" + name + ".pgm", "rb") as pgmf:
-        '''
-        for i in range(2):
-            print(pgmf.readline())
-        (width, height) = [int(i) for i in pgmf.readline().split()]
-        depth = int(pgmf.readline())
-        '''
         header = b''
         for i in range(4):
             header += pgmf.readline()
@@ -68,6 +64,12 @@ def get_indexes(x, y):
     return 0, 0
 
 
+def is_neighbor(new_r, new_c, r, c):
+	if abs(new_r - r) <= 1 and abs(new_c - c) <= 1:
+		return True
+	return False
+
+
 def write_circle_on_raster(row, col):
     for i in range(row - radius, row + radius + 1):
         dist = int(math.sqrt(radius ** 2 - abs(i - row) ** 2))
@@ -75,14 +77,7 @@ def write_circle_on_raster(row, col):
             if 0 <= i <= height - 1 and 0 <= j <= width - 1:
                 raster[i][j] = color
 
-
-def callback(data):
-    row, col = get_indexes(data.pose.pose.position.x, data.pose.pose.position.y)
-    global last_row
-    global last_col
-    if last_row == -1 and last_col == -1:
-        write_circle_on_raster(row, col)
-    else:
+def interpolate0(row, col, last_row, last_col):
 	if last_col < col:
 		for c in range(last_col + 1, col + 1):
 			write_circle_on_raster(last_row, c)
@@ -95,19 +90,48 @@ def callback(data):
 	else:
 		for r in range(row, last_row):
 			write_circle_on_raster(r, col)	
-	'''
-        if last_col != col:
-            m = (last_row - row) / (last_col - col)
-            if last_col < col:
-                for c in range(last_col + 1, col + 1):
-                    write_circle_on_raster(last_row + int((c - last_col) * m), c)
-            else:
-                for c in range(col, last_col):
-                    write_circle_on_raster(row + int((c - col) * m), c)
-        else:
-            for r in range(last_row, row + 1):
-                write_circle_on_raster(r, last_col)
-	'''
+
+
+def callback(data):
+    row, col = get_indexes(data.pose.pose.position.x, data.pose.pose.position.y)
+    global last_row
+    global last_col
+    if last_row == -1 and last_col == -1:
+        write_circle_on_raster(row, col)
+    else:
+	if interpolation == 0:
+		# 0-th order interpolation
+		interpolate0(row, col, last_row, last_col)
+	else:
+		# 1-st order interpolation
+		if last_col == col:
+		    if last_row > row:
+		        for r in range(row, last_row):
+		            write_circle_on_raster(r, col)
+		    else:
+		        for r in range(last_row + 1, row + 1):
+		            write_circle_on_raster(r, col)
+		else:
+		    m = - float(last_row - row) / (last_col - col)
+		    temp_c = last_col
+		    temp_r = last_row
+		    while last_col != col:
+			prev_col = int(last_col)			
+			prev_row = int(last_row)
+		        if last_row >= row:
+		            last_col += 1 * math.copysign(1, m)
+		            last_row = temp_r + (temp_c - last_col) * m
+			    if is_neighbor(int(math.floor(last_row)), int(last_col), prev_row, prev_col):
+		            	write_circle_on_raster(int(math.floor(last_row)), int(last_col))
+			    else:
+				interpolate0(int(math.floor(last_row)), int(last_col), prev_row, prev_col)
+		        else:
+		            last_col -= 1 * math.copysign(1, m)
+		            last_row = temp_r + (temp_c - last_col) * m
+		            if is_neighbor(int(math.floor(last_row)), int(last_col), prev_row, prev_col):
+		            	write_circle_on_raster(int(math.floor(last_row)), int(last_col))
+			    else:
+				interpolate0(int(math.floor(last_row)), int(last_col), prev_row, prev_col)
     last_row = row
     last_col = col
 
