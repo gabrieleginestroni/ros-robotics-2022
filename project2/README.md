@@ -10,15 +10,15 @@ The second project requires to perform mapping and localization with an homemade
 ## Files
 All of our code has been organized in a single package named _project2_. Inside this package we can find the following subdirectories:
 
-| Directory | Description                                                            |
-|-----------|------------------------------------------------------------------------|
-| bags      | ros bags provided with the project specification                       |
-| config    | configuration files for gmapping and  amcl                             |
-| launch    | launch files to start mapping and localization                          |
-| scripts   | python ros nodes for trajectory and map editing                                                       |
-| src       | ros node for publishing the odometry tf                                           |
-| srv       | odometry reset service declaration file                                |
-| map       | odometry reset service declaration file                                |
+| Directory | Description                                      |
+|-----------|--------------------------------------------------|
+| bags      | ros bags provided with the project specification |
+| config    | configuration files for gmapping and  amcl       |
+| launch    | launch files to start mapping and localization   |
+| scripts   | python ros nodes for trajectory and map editing  |
+| src       | ros node for publishing the odometry tf          |
+| srv       | trajectory drawer service declaration file       |
+| map       | maps images and .yaml                            |
 
 ## Instructions
 To start the project type the following code:
