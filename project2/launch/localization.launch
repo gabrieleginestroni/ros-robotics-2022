@@ -32,4 +32,7 @@
 		<arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
 	</include>
 
+	<!--  **************** visualisation ****************  -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find project2)/config/localization_config.rviz"/>
+
 </launch>
