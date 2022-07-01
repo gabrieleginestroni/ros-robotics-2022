@@ -51,6 +51,10 @@ To start the project type the following code:
 | /odom_tf | TF broadcaster for odometry  |
 | /occupancy_grid_processing | outputs de-noised version of the map as a topic   |
 | /slam_gmapping | gmapping node for mapping  |
+Bag file robotics1_final.bag has been used for creating the map with gmapping.
+
+To save the map, we've used the map_server ROS node that provides the map_saver command-line utility,
+which allows to save the map to file.
 
 - ### Nodes for localization
 | Node      | Description                                                       |
@@ -63,6 +67,7 @@ To start the project type the following code:
 | /map_server | publishes map as a topic  |
 | /path_finder | python node that prints the robot trajectory into the map image |
 | /amcl | amcl node for localization   |
+Bag files robotics2_final.bag and robotics3_final.bag have been used to test localization
 
 ## Trajectory drawer service
 The project provides a service that can be called to save a pgm image of the map with the trajectory the robot has followed so far 
