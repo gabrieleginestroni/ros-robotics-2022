@@ -3,9 +3,9 @@
 The first project requires to compute the odometry for an omnidirectional robot with four mecanum wheels.
 <br />
 
-## Group members (with person code):
-- ###  [Gabriele Ginestroni](https://github.com/gabrieleginestroni) (10687747)
-- ###  [Tommaso Capacci](https://github.com/TommasoCapacci) (10654230)
+## Group members:
+- ###  [Gabriele Ginestroni](https://github.com/gabrieleginestroni)
+- ###  [Tommaso Capacci](https://github.com/TommasoCapacci)
 
 ## Files
 All of our code has been organized in a single package named _project1_. Inside this package we can find the following subdirectories:
@@ -182,9 +182,9 @@ Comparing the plots, we decided to pick the parameters computed from ticks data.
 The second project requires to perform mapping and localization with an homemade omnidirectional robot with four mecanum wheels.
 <br />
 
-## Group members (with person code):
-- ###  [Gabriele Ginestroni](https://github.com/gabrieleginestroni) (10687747)
-- ###  [Tommaso Capacci](https://github.com/TommasoCapacci) (10654230)
+## Group members:
+- ###  [Gabriele Ginestroni](https://github.com/gabrieleginestroni)
+- ###  [Tommaso Capacci](https://github.com/TommasoCapacci)
 
 ## Files
 All of our code has been organized in a single package named _project2_. Inside this package we can find the following subdirectories:
