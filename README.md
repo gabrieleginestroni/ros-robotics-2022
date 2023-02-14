@@ -2,7 +2,7 @@
 
 The first project requires to compute the odometry for an omnidirectional robot with four mecanum wheels.
 <br />
-
+![Generic badge](https://img.shields.io/badge/Score:-3/3-<COLOR>.svg)
 ## Group members:
 - ###  [Gabriele Ginestroni](https://github.com/gabrieleginestroni)
 - ###  [Tommaso Capacci](https://github.com/TommasoCapacci)
@@ -181,7 +181,7 @@ Comparing the plots, we decided to pick the parameters computed from ticks data.
 
 The second project requires to perform mapping and localization with an homemade omnidirectional robot with four mecanum wheels.
 <br />
-
+![Generic badge](https://img.shields.io/badge/Score:-3/3-<COLOR>.svg)
 ## Group members:
 - ###  [Gabriele Ginestroni](https://github.com/gabrieleginestroni)
 - ###  [Tommaso Capacci](https://github.com/TommasoCapacci)
